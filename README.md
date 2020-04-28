@@ -49,5 +49,7 @@ Para execução, é possível utilizar os comandos:
 ### Cadastro de profissional
 * Um profissional deve ser cadastrado e deve ter um tipo (médico, estudante de medicina, psicólogo, etc). 
 * Os usuários do sistema são os próprios profissionais. Seu nome de usuário é o seu e-mail.
+* Após o cadastro, o profissional recebe um email com um link para ativação de sua conta e criação de uma senha.
+* A senha deve obedecer uma política definida. 
 * Um profissional (usuário do sistema) pode ter três tipos de perfil de acesso (papel): usuário, gestor de profissionais e administrador.
 * Para acessar um atendimento, o profissional precisa estar vinculado à cidade-sede daquele atendimento; seu tipo de profissional precisa ter acesso liberado ao estado em que o atendimento se encontra; e, caso seja um estudante (tipo de profissional sem conselho de classe), deve estar vinculado a um profissional preceptor.
