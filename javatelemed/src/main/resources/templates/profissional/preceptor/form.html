@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Preceptoria </title>
+        <main>
+
+            <input th:replace="fragments/form.html :: out('Preceptor', ${command.preceptor.nomeCompleto})"/>
+
+            <div class="row" th:if="${not #lists.isEmpty(command.preceptor.alunos)}">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Alunos</h5>
+                            <form action="#" th:action="@{${urlInativa}}" method="post" th:with="submitLabel='Inativar', submitIcon='fas fa-user-slash'">
+                                <input type="hidden" name="preceptor" th:value=${command.preceptor.id} />
+                                <div class="table-responsive-md">
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5em"></th>
+                                                <th>Nome</th>
+                                                <th style="width: 10em">CPF</th>
+                                                <th style="width: 10em">Inicio</th>
+                                                <th style="width: 10em">Validade</th>
+                                                <th style="width: 10em">Ativo?</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="aluno : ${command.preceptor.alunos}">
+                                                <td class="text-center">
+                                                    <input type="checkbox" name="alunosInativar" th:value="${aluno.id}" th:if="${aluno.ativo}"/>
+                                                </td>
+                                                <td th:text="${aluno.aluno.nomeCompleto}" />
+                                                <td th:text="${aluno.aluno.cpf}" />
+                                                <td th:text="${#calendars.format(aluno.inicio, 'dd/MM/yyyy HH:mm')}" />
+                                                <td th:text="${#calendars.format(aluno.validade, 'dd/MM/yyyy HH:mm')}" />
+                                                <td th:text="${aluno.ativo ? 'Sim' : 'Não'}" />
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div th:replace="fragments/form.html :: actions"></div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Vincular aluno ao preceptor</h5>
+                            <form action="#" th:action="@{${urlForm}}" method="get" th:object="${command}" >
+                                <div class="form-group">
+                                    <label class="font-weight-bold" for="tipoProfissional">Tipo de profissional</label>
+                                    <select name="idTipoProfissional" id="tipoProfissional" class="form-control" th:disabled="*{tipoProfissional} != null">
+                                        <option th:each="tipo : ${tiposProfissionais}"
+                                                th:text="${tipo.descricao}"
+                                                th:value="${tipo.id}" 
+                                                th:selected="*{tipoProfissional} != null and ${tipo.id} == *{tipoProfissional.id}"
+                                                />
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold" for="cidadeSede">Cidade sede</label>
+                                    <select name="idCidadeSede" id="cidadeSede" class="form-control" th:disabled="*{cidadeSede} != null">
+                                        <option th:each="cidade : ${cidadesSede}"
+                                                th:text="${cidade.nomeSiglaEstado}"
+                                                th:value="${cidade.id}" 
+                                                th:selected="*{cidadeSede} != null and ${cidade.id} == *{cidadeSede.id}"
+                                                />
+                                    </select>
+                                </div>
+                                <div class="form-group text-right">
+                                    <a class="btn btn-light btn-small" th:href="@{${urlForm}}"><i class="fas fa-search mr-2"></i> Limpar campos</a>
+                                    <button type="submit" class="btn btn-secondary btn-small"><i class="fas fa-search mr-2"></i> Buscar</button>
+                                </div>
+                            </form>
+
+                            <div th:if="${not #lists.isEmpty(profissionais)}">
+                                <form action="#" th:action="@{${urlForm}}" method="post" th:object="${command}" >
+                                    <input type="hidden" th:field=*{cidadeSede} />
+                                    <input type="hidden" th:field=*{tipoProfissional} />
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5em"></th>
+                                                <th>Nome</th>
+                                                <th style="width: 10em">CPF</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="profissional : ${profissionais}">
+                                                <td class="text-center">
+                                                    <input type="checkbox" th:field="*{alunos}" th:value="${profissional.id}" />
+                                                </td>
+                                                <td th:text="${profissional.nomeCompleto}" />
+                                                <td th:text="${profissional.cpf}" />
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <span class="badge badge-danger" th:if="${#fields.hasErrors('alunos')}" th:errors="*{alunos}">erro de validação</span>
+                                    <input th:replace="fragments/form.html :: text('Início (ex: 30/03/2020 19:00)', 'inicio')"/>
+                                    <input th:replace="fragments/form.html :: text('Validade (ex: 31/03/2020 07:00)', 'validade')"/>
+                                    <div th:replace="fragments/form.html :: actions"></div>
+                                </form>
+                            </div>
+                            <span th:if="${command.cidadeSede != null and command.tipoProfissional != null and #lists.isEmpty(profissionais)}" class="badge badge-secondary" >
+                                A procura não retornou nenhum valor
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        <script type="text/javascript">
+            $('#inicio').mask('99/99/9999 99:99');
+            $('#validade').mask('99/99/9999 99:99');
+        </script>
+    </th:block>
+</html>

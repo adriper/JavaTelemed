@@ -1,0 +1,16 @@
+<!--
+  - Fragmento que contém o conteúdo do footer da página.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <footer th:fragment="footer" th:with="container=${container != null ? container : 'container'}">
+        <div th:class="|${container}|">
+            <hr class="stroke my-0"/>
+        </div>
+        <div th:class="|${container} py-1 small text-muted|">
+            <div class="d-flex justify-content-between">
+                <span th:text ="${appInfo?.name + ' - ' + appInfo?.version}">name- version</span>
+                <span th:text ="${'build ' + appInfo?.timestamp}">build timestamp</span>
+            </div>
+        </div>
+    </footer>
+</html>

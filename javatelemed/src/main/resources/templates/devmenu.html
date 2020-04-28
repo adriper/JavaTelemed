@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with="container='container-fluid', headerType='header_slim'">
+        <!-- COLOQUE CSS LINKS AQUI (opcional) -->
+        <!--<link rel="stylesheet" type="text/css" th:href="@{/assets/javatelemed/css/login.css}"/>-->
+
+        <title>Menu Dev</title>
+        <main>
+            <ul>
+                <li><a th:href="@{/home}">/home</a></li>
+                <li><a th:href="@{/public/testError}">/error</a></li>
+                <li><a th:href="@{/admin/profissional/lista/}">/admin/profissional/lista/</a></li>
+                <li><a th:href="@{/admin/profissional/form/}">/admin/profissional/form/</a></li>
+                <li><a th:href="@{/admin/profissional/listaTipo/}">/admin/profissional/listaTipo/</a></li>
+                <li><a th:href="@{/admin/profissional/formTipo/}">/admin/profissional/formTipo/</a></li>
+                <li><a th:href="@{/admin/localizacao/cidade/form/}">/admin/localizacao/cidade/form/</a></li>
+                <li><a th:href="@{/admin/especialidade/lista/}">/admin/especialidade/lista/</a></li>
+                <li><a th:href="@{/admin/especialidade/form/}">/admin/especialidade/form/</a></li>
+                <li><a th:href="@{/admin/estado/consulta/lista/}">/admin/estado/consulta/lista/</a></li>
+                <li><a th:href="@{/admin/estado/consulta/form/}">/admin/estado/consulta/form/</a></li>
+                <li><a th:href="@{/profissional/trocaSenha/}">/profissional/trocaSenha/</a></li>
+                <!--<li><a th:href="@{}"></a></li>-->
+            </ul>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

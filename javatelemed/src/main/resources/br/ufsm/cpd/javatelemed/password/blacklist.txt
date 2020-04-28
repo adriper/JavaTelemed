@@ -1,0 +1,11 @@
+((test(e)?)+\d*)+
+((admin)+\d*)+
+((root)+\d*)+
+((password)+\d*)+
+((senha)+\d*)+
+((secret(o|a)?)+\d*)
+((segredo)+\d*)
+((qwert(y|u|i|o|p)?)+\d*)
+((asdfg(h|j|k|l)?)+\d*)
+((zxcvb(n|m)?)+\d*)
+^(.)\1+$

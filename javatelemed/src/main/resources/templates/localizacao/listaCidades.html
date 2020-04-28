@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Visualiza cidade</title>
+        <main>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <form th:action="@{/admin/localizacao/cidade/lista/}" method="get" action="#">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="form-group">
+                                            <label for="estado" class="font-weight-bold">
+                                                Estado
+                                            </label>
+                                            <select name="estado" class="form-control" required>
+                                                <option th:each="e : ${estados}"
+                                                        th:text="${e.nome}"
+                                                        th:value="${e.id}" 
+                                                        th:selected="${estado != null } and ${e.id} == ${estado.id}" 
+                                                        />
+                                            </select>
+                                        </div>
+                                    </div>                                    
+                                    <div class="col-md">
+                                        <div class="form-group">
+                                            <label for="nome" class="font-weight-bold">
+                                                Nome
+                                            </label>
+                                            <input type="text" name="nome" id="nome" class="form-control" />
+                                        </div>
+                                        <div class="form-group text-right">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-search mr-2"></i> Buscar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                    <table class="table table-sm table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 8em"></th>
+                                <th style="width: 15em">Código</th>
+                                <th>Nome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="cidade: ${page.content}">
+                                <td>
+                                    <a title="Visualizar" class="btn btn-light btn-sm" th:href="@{/admin/localizacao/cidade/view/__${cidade.id}__}"><i class="fas fa-folder-open"></i></a>
+                                    <a title="Editar" class="btn btn-light btn-sm" th:href="@{/admin/localizacao/cidade/form/__${cidade.id}__}"><i class="fas fa-edit"></i></a>
+                                    <a th:if="${cidade.atendimento}" title="Definir cidades atendidas" class="btn btn-light btn-sm" th:href="@{/admin/localizacao/cidade/atendidas/__${cidade.id}__}"><i class="fas fa-city"></i></a>
+                                </td>
+                                <td th:text="${cidade.codigo}"></td>
+                                <td th:text="${cidade.nome}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul class="nav nav-pills">
+                        <li class="nav-item" aria-selected="true" th:each="i : ${#numbers.sequence(0, page.totalPages-1)}">
+                            <a th:href="@{/admin/localizacao/cidade/lista/?page=__${i}__&estado=__${estado.id}__}" th:text="${i} +1" class="nav-link" th:classappend="${page.number} == ${i} ? 'active' : ''"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </th:block>
+</html>

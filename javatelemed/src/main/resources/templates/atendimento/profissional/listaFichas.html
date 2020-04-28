@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with="container='container-fluid'">
+        <title>Lista atendimentos</title>
+        <main>
+            <div class="row" th:if="${possuiNovaFicha}">
+                <audio id="soundBell" th:src="@{/assets/sound/bell.mp3}"></audio>
+                <div class="col text-center">
+                    <h4 class="p2"><span class="badge badge-warning">Novo atendimento disponível!</span></h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <!-- INICIO CONTEÚDO -->
+                    <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#collapseSearch" aria-controls="collapseSearch" id="btnBuscar">
+                        <i class="fas fa-search mr-2"></i> Buscar
+                    </button>
+                    <div class="card bg-light mt-3 collapse" id="collapseSearch">
+                        <form action="#" th:action="@{/user/atendimento/lista/}">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="protocolo">Protocolo</label>
+                                            <input type="text" class="form-control" name="protocolo" id="protocolo" th:value="${protocolo}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="paciente">Nome do paciente</label>
+                                            <input type="text" class="form-control" name="paciente" id="paciente" th:value="${paciente}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="cpf">CPF</label>
+                                            <input type="text" class="form-control" name="cpf" id="cpf" th:value="${cpf}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="estadoConsulta">Estado</label>
+                                            <select id="estadoConsulta" name="estadoConsulta" class="form-control">
+                                                <option th:value="0" th:text="Todos" />
+                                                <option th:each="e : ${estadosConsulta}"
+                                                        th:value="${e.id}"
+                                                        th:text="${e.descricao}" th:selected="${estadoConsulta} != null and ${e.id} == ${estadoConsulta.id}" />
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="dataInicio">Data início</label>
+                                            <input type="text" class="form-control data" name="dataInicio" id="dataInicio"  
+                                                   th:value="${#calendars.format(dataInicio, 'dd/MM/yyyy')}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="dataInicio">Data fim</label>
+                                            <input type="text" class="form-control data" name="dataFim" id="dataFim"
+                                                   th:value="${#calendars.format(dataFim, 'dd/MM/yyyy')}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-right">
+                                        <button type="button" class="btn btn-secondary" onClick="limpar()"><i class="fas fa-eraser mr-2"></i> Limpar</button>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-search mr-2"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col" th:unless="${#lists.isEmpty(page.content)}">
+                    <div class="text-right small">
+                        Total: <span class="font-weight-bold" th:text="${page.totalElements}" />
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table mt-3 table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th ><a th:href="@{/user/atendimento/lista/?order=id}">Ações</a></th>
+                                    <th class="text-center" style="min-width: 8em;">Protocolo</th>
+                                    <th class="text-center" style="min-width: 8em;">CPF</th>
+                                    <th style="min-width: 12em;"><a th:href="@{/user/atendimento/lista/?order=nome}">Paciente</a></th>
+                                    <th style="min-width: 12em;"><a th:href="@{/user/atendimento/lista/?order=responsavel}">Atendido por</a></th>
+                                    <th style="min-width: 12em;"><a th:href="@{/user/atendimento/lista/?order=estadoConsulta}">Estado</a></th>
+                                    <th class="text-center" style="min-width: 6em;"><a th:href="@{/user/atendimento/lista/?order=momentoUltimaMensagem}">Última mensagem</a></th>
+                                    <th class="text-center" style="min-width: 6em;">Criado em</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="ficha : ${page.content}">
+                                    <td class="text-center text-nowrap">
+                                        <a title="Iniciar atendimento" class="btn btn-sm btn-light" th:unless="${currentUser?.admin}" th:href="@{/user/atendimento/recebe/__${ficha.id}__}"><i class="fas fa-user-check"></i></a>
+                                        <a title="Iniciar atendimento" class="btn btn-sm btn-light" th:if="${currentUser?.admin}" th:href="@{/admin/atendimento/visualiza/__${ficha.id}__}"><i class="fas fa-user-check"></i></a>
+                                    </td>
+                                    <td class="text-center text-nowrap">
+                                        <span  th:text="${ficha.protocolo}" class="badge badge-warning" th:if="${ficha.suspeitoLeve}" title="Suspeito leve"/>
+                                        <span  th:text="${ficha.protocolo}" class="badge badge-danger" th:if="${ficha.suspeitoGrave}" title="Suspeito grave" />
+                                        <span  th:text="${ficha.protocolo}" class="badge badge-light" th:if="not ${ficha.suspeito}" />
+
+                                    </td>
+                                    <td class="text-center text-nowrap" th:text="${ficha.cpf}"></td>
+                                    <td th:text="${ficha.nome}"></td>
+                                    <td  th:title="${ficha.responsavel?.nomeSobrenomePrefix}">
+                                        <span th:if="${ficha.estudante}" th:text="${ficha.estudante.nomeSobrenomePrefix}"></span>
+                                        <span th:if="${ficha.estudante != null}">
+                                            <i class="fas fa-chalkboard-teacher"></i>
+                                        </span>
+                                        <span th:if="${ficha.estudante == null} and ${ficha.responsavel} " th:text="${ficha.responsavel.nomeSobrenomePrefix}"></span>
+                                        <span th:if="${ficha.responsavel == null}">-</span>
+                                    </td>
+                                    <td><span class="small" th:text="${ficha.estadoConsulta.descricao}"></span></td>
+                                    <td class="text-center text-nowrap" th:text="${#calendars.format(ficha.momentoUltimaMensagem, 'dd/MM/yyyy')}"></td>
+                                    <td class="text-center text-nowrap" th:text="${#calendars.format(ficha.momentoCriacao, 'dd/MM/yyyy')}"></td>
+                                </tr>
+
+                            </tbody>
+                        </table>                
+                    </div>
+                    <hr/>
+                    <ul class="nav nav-pills" th:if="${page.numberOfElements} > 0">
+                        <li class="nav-item" aria-selected="true" th:each="i : ${#numbers.sequence(0, page.totalPages-1)}">
+                            <a th:href="@{/user/atendimento/lista/?page=__${i}__&order=__${order}__&protocolo=__${#objects.nullSafe(protocolo, '')}__&paciente=__${#objects.nullSafe(paciente, '')}__&cpf=__${#objects.nullSafe(cpf, '')}__&estadoConsulta=__${#objects.nullSafe(estadoConsulta?.id, '')}__&dataInicio=__${#objects.nullSafe(#calendars.format(dataInicio, 'dd/MM/yyyy'), '')}__&dataFim=__${#objects.nullSafe(#calendars.format(dataFim, 'dd/MM/yyyy'), '')}__}" th:text="${i} + 1" class="nav-link" th:classappend="${page.number} == ${i} ? 'active' : ''"></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col" th:if="${#lists.isEmpty(page.content)}">
+                    <h5><span class="badge badge-secondary">Nenhuma ficha para atendimento</span></h5>
+                </div>
+            </div>
+        </main>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.data').mask('99/99/9999');
+                $('#cpf').mask('999.999.999-99');
+                        if ([[${buscou}]]) {
+                $('#btnBuscar').click();
+                }
+                setTimeout(function () {
+                    location.reload();
+                }, 30 * 1000);
+            });
+            function limpar() {
+                window.location = '[[@{/user/atendimento/lista/}]]';
+            }
+        </script>
+        <script type="text/javascript" th:if="${possuiNovaFicha}">
+            $(document).ready(function () {
+                $('#soundBell').get(0).play();
+            });
+        </script>
+    </th:block>
+</html>

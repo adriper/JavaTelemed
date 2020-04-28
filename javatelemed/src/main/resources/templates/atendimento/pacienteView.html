@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with="container='container-fluid', headerType='header_slim'">
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <script th:src="@{/assets/chat/sockjs-0.3.4.js}"></script>
+        <script th:src="@{/assets/chat/stomp.js}"></script>
+        <title>Visualizar atendimento</title>
+        <main>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row" id="cardInfo">
+                        <div class="col-md">
+                            <div class="card bg-warning">
+                                <div class="card-body">
+                                    Seu protocolo é <span class="font-weight-bold" th:text="${ficha.protocolo}"></span>
+                                    e sua senha é <span class="font-weight-bold" th:text="${ficha.senha}"></span>.
+                                    Guarde esses valores para acessar a consulta no futuro, ou caso tenha algum problema técnico durante o atendimento.
+                                    <div th:if="${ficha.estadoConsulta.estadoInicial}">Em breve você será atendido(a)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${ficha.finalizado}">
+                        <div class="col-md" >
+                            <div class="card bg-light mt-2">
+                                <div class="card-body">
+                                    Seu atendimento foi finalizado. Caso deseje um novo atendimento, <a th:href="@{/atendimento}">clique aqui</a>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${ficha.estadoConsulta.estadoInicial}" id="divAtendimentoNovo">
+                        <div class="col-md" >
+                            <div class="card bg-light mt-2">
+                                <div class="card-body">
+                                    Seu atendimento iniciará em instantes. Aguarde...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" th:unless="${ficha.estadoConsulta.atendimentoFinalizado}" id="divMensagens">
+                        <div class="col">
+                            <!--<form action="#" th:action="@{/atendimento/nota}" method="post" id="form-nota">-->
+                            <!--<input type="hidden" name="protocolo" th:value="${ficha.protocolo}" />-->
+                            <!--<input type="hidden" name="senha" th:value="${ficha.senha}" />-->
+                            <div class="card bg-light mt-3">
+                                <div class="card-body">
+                                    <label for="mensagem" class="font-weight-bold">Enviar mensagem</label>
+                                    <textarea name="mensagem" class="form-control" id="mensagem" required></textarea>
+                                    <div class="text-right">
+                                        <button class="btn btn-primary mt-2" type="button" id="send" ><i class="fas fa-check-circle mr-2"></i> Enviar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--</form>-->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <hr class="divider" />
+                            <h4>Mensagens</h4>
+                            <div id="divNotas">
+                                <th:block th:each="nota : ${ficha.notas}">
+                                    <div th:if="${nota.isPaciente}" class="card mt-2 bg-light"  style="width: 80%; margin-left: 5em" th:data-id="${nota.id}">
+                                        <div class="card-body">
+                                            <h5 class="card-title" th:text="${nota.nomeAutor}"></h5>
+                                            <h6 class="card-subtitle mb-2 text-muted" th:text="${#calendars.format(nota.momentoCriacao, 'dd/MM/yyyy HH:mm')}"></h6>
+                                            <p class="card-text" th:utext="${nota.descricao}"></p>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${nota.isPaciente}" class="card mt-2"  style="width: 80%; margin-right: 5em" th:data-id="${nota.id}">
+                                        <div class="card-body">
+                                            <h5 class="card-title" th:text="${nota.nomeAutor}"></h5>
+                                            <h6 class="card-subtitle mb-2 text-muted" th:text="${#calendars.format(nota.momentoCriacao, 'dd/MM/yyyy HH:mm')}"></h6>
+                                            <p class="card-text" th:utext="${nota.descricao}"></p>
+                                        </div>
+                                        <div class="card-footer text-muted" th:if="${nota.possuiArquivo}">
+                                            <a th:href="@{/atendimento/nota/download?protocolo=__${ficha.protocolo}__&senha=__${ficha.senha}__(nota=__${nota.id}__)}">Download arquivo</a>
+                                        </div>
+                                    </div>
+                                </th:block>
+                                <div class="card mt-2" style="width: 80%; margin-right: 5em">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Descrição inicial do que você está sentindo</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted" th:text="${#calendars.format(ficha.momentoCriacao, 'dd/MM/yyyy HH:mm')}"></h6>
+                                        <p class="card-text" th:text="${ficha.descricao}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card mt-2" style="">
+                                <div class="card-body">
+                                    <h5 class="card-title">Seus dados</h5>
+                                    <span class="font-weight-bold">Nome</span>: <span th:text="${ficha.nome}"></span><br />
+                                    <span class="font-weight-bold">Data de nascimento</span>: <span th:text="${#calendars.format(ficha.dataNascimento, 'dd/MM/yyyy')}" /><br />
+                                    <span class="font-weight-bold">Idade</span>: <span th:text="${ficha.idade}"></span> anos<br />
+                                    <span class="font-weight-bold">Sexo</span>: <span th:text="${ficha.sexo.descricao}"></span><br />
+                                    <span class="font-weight-bold">CPF</span>: <span th:text="${ficha.cpf}" /><br />
+                                    <th:block th:if="${ficha.nomeResponsavelLegal}">
+                                        <span class="font-weight-bold">Responsável</span>: <span th:text="${ficha.nomeResponsavelLegal}"></span><br />
+                                        <span class="font-weight-bold">Data de nascimento do responsável</span>: <span th:text="${#calendars.format(ficha.dataNascimentoResponsavelLegal, 'dd/MM/yyyy')}" /><br />
+                                        <span class="font-weight-bold">CPF do responsável</span>: <span th:text="${ficha.cpfResponsavelLegal}" /><br />                                        
+                                    </th:block>                                                                        
+                                    <span class="font-weight-bold">Telefone</span>: <span th:text="${ficha.telefone}" /><br />
+                                    <span class="font-weight-bold">E-mail</span>: <span th:text="${ficha.email}" /><br />
+                                    <span class="font-weight-bold">Cidade</span>: <span th:text="${ficha.cidade.nome}" /><br />
+                                    <span class="font-weight-bold">Nome da mãe</span>: <span th:text="${ficha.nomeMae}" /><br />
+                                    <span class="font-weight-bold">Endereço</span>: <span th:text="${ficha.enderecoCompleto}" /><br />
+                                    <span class="font-weight-bold">CEP</span>: <span th:text="${ficha.cep}" /><br />
+                                    <span class="font-weight-bold">Bairro</span>: <span th:text="${ficha.bairro}" /><br />
+                                    <span class="font-weight-bold">Profissão</span>: <span th:text="${ficha.profissao}" /><br />
+                                    <span class="font-weight-bold">Convênio saúde</span>: <span th:text="${ficha.convenioSaude}" /><br />
+                                    <!--<span class="font-weight-bold">Viagem recente</span>: <span th:text="${viagemRecente}" /><br />-->
+                                    <span class="font-weight-bold">Contato caso confirmado</span>: <span th:text="${ficha.contatoCasoConfirmado}" /><br />
+                                    <span class="font-weight-bold">Início dos sintomas</span>: <span th:text="${#calendars.format(ficha.dataInicialSintomas, 'dd/MM/yyyy')}" /><br />
+                                    <span class="font-weight-bold">Sintomas</span>: <br />
+                                    <span th:if="${ficha.febre}" th:text="Febre"/><br th:if="${ficha.febre}"/>
+                                    <span th:if="${ficha.cefaleia}" th:text="Cefaleia"/><br th:if="${ficha.cefaleia}"/>
+                                    <span th:if="${ficha.mialgia}" th:text="Mialgia"/><br th:if="${ficha.mialgia}"/>
+                                    <span th:if="${ficha.tosse}" th:text="Tosse"/><br th:if="${ficha.tosse}"/>
+                                    <span th:if="${ficha.dispneia}" th:text="Dispneia"/><br th:if="${ficha.dispneia}"/>
+                                    <span class="font-weight-bold">Outros sintomas</span>: <span th:text="${ficha.outrosSintomas}"/><br />
+                                    <span class="font-weight-bold">Doenças crônicas:</span><br />
+                                    <span th:if="${ficha.diabetes}" th:text="Diabetes"/><br th:if="${ficha.diabetes}"/>
+                                    <span th:if="${ficha.hipertensao}" th:text="Hipertensão"/><br th:if="${ficha.hipertensao}"/>
+                                    <span th:if="${ficha.cardiopatia}" th:text="Cardiopatia"/><br th:if="${ficha.cardiopatia}"/>
+                                    <span th:if="${ficha.asma}" th:text="Asma"/><br th:if="${ficha.asma}"/>
+                                    <span class="font-weight-bold">Outras doenças</span>: <span th:text="${ficha.outrasDoencas}"/><br />
+                                    <span class="font-weight-bold">Medicação contínua</span>: <span th:text="${ficha.medicacaoContinua}" /><br />
+                                    <span class="font-weight-bold">Alergia à medicamento</span>: <span th:text="${ficha.alergiaMedicamentos}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM CONTEÚDO -->
+        </main>
+        <script type="text/javascript" th:unless="${ficha.estadoConsulta.atendimentoFinalizado}">
+            function removeEnvioMensagens() {
+                $('#divMensagens').hide();
+                var divRow = $('<div>', {'class': 'row'});
+                var divCol = $('<div>', {'class': 'col-md'});
+                var divCard = $('<div>', {'class': 'card bg-light'});
+                var divCardBody = $('<div>', {'class': 'card-body'});
+                var msg = $("Seu atendimento foi finalizado. Ao atualizar essa página, você não terá mais acesso ao atendimento. <br />Caso deseje um novo atendimento, <a th:href=\"[[@{/atendimento}]]\">clique aqui</a>.");
+                divCardBody.html(msg);
+                divCard.html(divCardBody);
+                divCol.html(divCard);
+                divRow.append(divCol);
+                $('#cardInfo').append(divRow);
+            }
+
+            var stompClient = null;
+            function connect() {
+                var socket = new SockJS('/gs-guide-websocket');
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function (frame) {
+                    console.log('Connected: ' + frame);
+                    stompClient.subscribe('/topic/chat/[[${ficha.salaAtendimento}]]', function (mensagem) {
+                        recebeMensagem(JSON.parse(mensagem.body));
+                    });
+                });
+            }
+            function sendMessage() {
+                if ($("#mensagem").val().trim()) {
+                    stompClient.send("/app/atendimentopaciente/[[${ficha.salaAtendimento}]]", {},
+                            JSON.stringify({'message': $("#mensagem").val()}));
+                    $("#mensagem").val('');
+                }
+            }
+
+            function recebeMensagem(message) {
+                montaCard(message);
+                if (message.permiteNotaPaciente) {
+                    if (!$("#divMensagens").is(":visible")) {
+                        $('#divMensagens').show();
+                        $('#divAtendimentoNovo').hide();
+                    }
+                } else {
+                    $('#divMensagens').hide();
+                }
+                if (message.concluido) {
+                    removeEnvioMensagens();
+                }
+            }
+            function montaCard(mensagem) {
+                var style = !mensagem.paciente ? "width: 80%; margin-right: 5em" : "width: 80%; margin-left: 5em";
+                var classCard = "card mt-2 " + (mensagem.paciente ? "bg-light" : "");
+                var divCard = $('<div>', {'class': classCard, 'style': style, 'data-id': mensagem.idNota});
+                var divBody = $('<div>', {'class': "card-body"});
+                var divTitle = $('<h5>', {'class': 'card-title'}).html(mensagem.autor);
+                var divSubTitle = $('<h6>', {'class': 'card-subtitle mb-2 text-muted'}).html(mensagem.momentoEnvio);
+                var divDescricao = $('<p>', {'class': "card-text"}).html(mensagem.conteudo);
+                divBody.append(divTitle).append(divSubTitle).append(divDescricao);
+                divCard.append(divBody);
+                if (mensagem.arquivo) {
+                    var divCardFooter = $('<div>', {'class': 'card-footer text-muted'})
+                    var downloadArquivo = $('<a>', {'href': "[[@{/atendimento/nota/download?protocolo=}]]" +
+                                "[[${ficha.protocolo}]]" +
+                                "&senha=" + "[[${ficha.senha}]]" +
+                                "&nota=" + mensagem.idNota}).html("Download do arquivo");
+                    divCardFooter.append(downloadArquivo);
+                    divCard.append(divCardFooter);
+                }
+                $('#divNotas').prepend(divCard);
+            }
+
+            $(function () {
+                connect();
+                $("#send").click(function () {
+                    sendMessage();
+                });
+                $("form").on('submit', function (e) {
+                    e.preventDefault();
+                });
+                        if ([[${!ficha.estadoConsulta.permiteNotaPaciente}]]){
+                $('#divMensagens').hide();
+                }
+            });
+        </script>
+    </th:block>
+</html>

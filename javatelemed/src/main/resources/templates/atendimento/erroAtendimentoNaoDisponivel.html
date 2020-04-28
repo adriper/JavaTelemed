@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with="headerType='header_slim'">
+        <title>Atendimento não disponível</title>
+        <main>
+            <div class="row">
+                <div class="col-md">
+                    <div class="card bg-warning">
+                        <div class="card-body">
+                            <!--<h5 class="card-title"></h5>-->
+                            <span class="font-weight-bold">O atendimento não está disponível no momento. Aguardade alguns instantes e tente novamente<br />
+                            <span th:text="${msg}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </th:block>
+</html>

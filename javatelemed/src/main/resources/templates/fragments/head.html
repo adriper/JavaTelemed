@@ -1,0 +1,18 @@
+<!--
+  - Fragmento que contém os includes básicos de CSSs,
+  - além das meta-tags das páginas.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head th:fragment="head(title,links)">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="theme-color" content="#025664" />
+        <title th:text="${title != null ? 'JavaTelemed - ' + title : 'JavaTelemed'}">JatavTelemed</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/font-awesome/css/all.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/bootstrap/css/bootstrap.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/javatelemed/css/main.css}"/>
+
+        <!--/* Per-page placeholder for additional links */-->
+        <th:block th:replace="${links} != null ? ${links} : ~{}" />
+    </head>
+</html>

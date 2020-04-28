@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Cadastro de Especialidade</title>
+        <main>
+            <form action="#" th:action="@{/admin/especialidade/form/__${#objects.nullSafe(command.id, '')}__}" th:object="${command}" method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <th:block th:insert="fragments/form.html :: text('Código', 'codigo')"/>
+                    </div>
+                    <div class="col-md">
+                        <th:block th:insert="fragments/form.html :: text('Descrição', 'descricao')"/>
+                    </div>
+                </div>
+                <th:block th:insert="fragments/form.html :: actions"></th:block>
+            </form>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

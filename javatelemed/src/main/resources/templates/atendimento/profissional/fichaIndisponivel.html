@@ -1,0 +1,9 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Ficha indisponível</title>
+        <main>
+            <h5><span th:text="${msg}" class="badge badge-danger"  /></h5>
+        </main>
+    </th:block>
+</html>

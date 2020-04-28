@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Preceptoria - Seleciona profssional (preceptor)</title>
+        <main>
+            <form action="#" th:action="@{/admin/profissional/preceptor/busca/}" method="post">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="tipoProfissionalPreceptor" class="font-weight-bold">Tipo profissional preceptor</label>
+                            <select id="tipoProfissionalPreceptor" name="tipoProfissionalPreceptor" class="form-control">
+                                <option value="">Todos os tipos</option>
+                                <option th:each="tipo : ${tiposProfissional}" 
+                                        th:value="${tipo.id}"
+                                        th:text="${tipo.descricao}"
+                                        />
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nomeProfissional" class="font-weight-bold">Nome do profissional</label>
+                            <input id="nomeProfissional" name="nome" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="cpfProfissional" class="font-weight-bold">CPF do profissional</label>
+                            <input id="cpfProfissional" name="cpf" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="numeroRegistro" class="font-weight-bold">Número do registro do profissional</label>
+                            <input id="numeroRegistro" name="numeroRegistro" class="form-control"/>
+                        </div>
+                        <div class="form-group text-right">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-search mr-2"></i>  Buscar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

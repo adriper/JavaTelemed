@@ -1,0 +1,20 @@
+<!--
+  - Fragmento de layout, para construir uma página.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:fragment="layout(title, links, content, jscripts)"
+              th:with="container=${container != null ? container : 'container'},headerType=${headerType != null ? headerType : 'header_full'}">
+        <head th:replace="fragments/head.html :: head(${title}, ${links})"></head>
+        <body>
+            <th:block th:insert="fragments/header.html :: __${headerType}__"></th:block>
+            <main role="main">
+                <div th:class="|${container} py-4|">
+                    <h2 class="h3 text-primary border-bottom pb-2 mb-3" th:text="${title != null ? title : 'Sem título definido'}"></h2>
+                    <th:block th:replace="${content} != null ? ${content} : ~{}" th:remove="tag"></th:block>
+                </div>
+            </main>
+            <th:block th:insert="fragments/footer.html :: footer"></th:block>
+            <th:block th:insert="fragments/scripts.html :: scripts(${jscripts})"></th:block>
+        </body>
+    </th:block>
+</html>

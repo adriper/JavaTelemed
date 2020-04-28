@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Bem Vindo</title>
+        <main>
+            <div class="row">
+                <div class="col">
+                    <a th:href="@{/atendimento}" class="btn btn-primary btn-lg btn-block">Solicitar novo atendimento</a>
+                    <a th:href="@{/visualizar}" class="btn btn-secondary btn btn-block">Visualizar atendimento</a>
+                </div>
+            </div>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

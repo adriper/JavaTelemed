@@ -1,0 +1,9 @@
+Prezado(a) <b>$token.profissional.nomeSobrenomePrefix</b>,
+você foi cadastrado(o) na plataforma JavaTelemed
+<br>
+Para ativar o seu usuário, acesse o endereço abaixo e defina uma senha.<br>
+<a href="${host}/public/redefinirSenha/$token.token">Ativar cadastro</a>
+<br>
+Caso não consiga clicar no link acima, copie o endereço abaixo e cole no seu navegador: 
+<br>
+${host}/public/redefinirSenha/$token.token

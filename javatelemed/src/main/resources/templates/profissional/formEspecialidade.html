@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Profissional - definir especialidades</title>
+        <main>
+            <form action="#" th:action="@{/admin/profissional/formEspecialidade/__${#objects.nullSafe(command.profissional.id, '')}__}" th:object="${command}" method="post">
+                <div th:object="${command.profissional}" class="row">
+                    <div class="col">
+                        <h3 class="h4">Profissional</h3>
+                        <div class="row">
+                            <div class="col-md">
+                                <th:block th:insert="fragments/form.html :: out('CPF', *{cpf})"/>
+                            </div>
+                            <div class="col-md">
+                                <th:block th:insert="fragments/form.html :: out('Nome', *{nomeCompleto})"/>
+                            </div>
+                            <div class="col-md">
+                                <th:block th:insert="fragments/form.html :: out('Email', *{email})"/>
+                            </div>
+                        </div>
+
+                        <h3 class="h4">Especialidades</h3>
+                        <table class="table table-sm table-striped table-hover" th:unless="*{#lists.isEmpty(especialidades)}">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="e : *{especialidades}">
+                                    <td th:text="${e.codigo}"></td>
+                                    <td th:text="${e.descricao}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <span class="badge badge-secondary" th:if="*{#lists.isEmpty(especialidades)}">Nenhuma especialidade definida</span>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <h3 class="h4">Adicionar Especialidade</h3>
+                        <th:block th:insert="fragments/form.html :: selectEntity('Especialidade', 'especialidade', 'descricao', ${especialidades})"/>
+                        <th:block th:insert="fragments/form.html :: actions"></th:block>
+                    </div>
+                </div>
+            </form>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

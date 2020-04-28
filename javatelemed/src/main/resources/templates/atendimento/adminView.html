@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with="container='container-fluid'">
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <script th:src="@{/assets/chat/sockjs-0.3.4.js}"></script>
+        <script th:src="@{/assets/chat/stomp.js}"></script>
+        <title>Visualizar atendimento</title>
+        <main>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col">
+                            <h3>
+                                <span class="font-weight-bold" th:text="${ficha.nome}"></span>
+                            </h3>
+                            <h5 th:if="${ficha.nomeResponsavelLegal}">Responsável: <span class="font-weight-bold" th:text="${ficha.nomeResponsavelLegal}"></span></h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            Protocolo: <span class="font-weight-bold" th:text="${ficha.protocolo}"></span>
+                            |
+                            Criado em: <span class="font-weight-bold" th:text="${#calendars.format(ficha.momentoCriacao, 'dd/MM/yyyy HH:mm')}"></span>
+                            <th:block th:if="${ficha.responsavel != null}">
+                                |
+                                <span th:text="${ficha.nomeResponsavelComEstudante}" />
+                            </th:block>
+                            <th:block th:if="${outroSuspeito} != null or ${ficha.suspeito}">
+                                | 
+                                <span th:if="${ficha.suspeitoLeveSemRisco} or ${outroSuspeito?.suspeitoLeveSemRisco}" class="badge badge-warning badge-pill big"><big>Suspeito Leve - sem risco</big></span>
+                                <span th:if="${ficha.suspeitoLeveComRisco} or ${outroSuspeito?.suspeitoLeveComRisco}" class="badge badge-warning badge-pill big"><big>Suspeito Leve - com risco</big></span>
+                                <span th:if="${ficha.suspeitoGrave} or ${outroSuspeito?.suspeitoGrave}" class="badge badge-danger badge-pill big"><big>Suspeito Grave</big></span>
+                            </th:block>
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col">
+                            <div class="card mt-3 mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Considerações do profissional sobre o atendimento</h5>
+                                    <p class="card-text" th:utext="${ficha.consideracoesProfissional}"></p>
+                                    <p class="card-text" th:if="${#strings.isEmpty(ficha.consideracoesProfissional)}">Nenhuma consideração inserida</p>
+                                </div>
+                            </div>
+                            <h5>Mensagens</h5>
+                            <div id="divNotas">
+                                <th:block th:each="nota : ${ficha.notas}">
+                                    <div th:if="${nota.isPaciente}" class="card mt-2 bg-light"  style="width: 80%; margin-left: 5em" th:data-id="${nota.id}">
+                                        <div class="card-body">
+                                            <h5 class="card-title" th:text="${nota.nomeAutor}"></h5>
+                                            <h6 class="card-subtitle mb-2 text-muted" th:text="${#calendars.format(nota.momentoCriacao, 'dd/MM/yyyy HH:mm')}"></h6>
+                                            <p class="card-text" th:utext="${nota.descricao}"></p>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${nota.isPaciente}" class="card mt-2"  style="width: 80%; margin-right: 5em" th:data-id="${nota.id}">
+                                        <div class="card-body">
+                                            <h5 class="card-title" th:text="${nota.nomeAutor}"></h5>
+                                            <h6 class="card-subtitle mb-2 text-muted" th:text="${#calendars.format(nota.momentoCriacao, 'dd/MM/yyyy HH:mm')}"></h6>
+                                            <p class="card-text" th:utext="${nota.descricao}"></p>
+                                        </div>
+                                        <div class="card-footer text-muted" th:if="${nota.possuiArquivo}">
+                                            <a th:href="@{/atendimento/nota/download?protocolo=__${ficha.protocolo}__&senha=__${ficha.senha}__(nota=__${nota.id}__)}">Download arquivo</a>
+                                        </div>
+                                    </div>
+                                </th:block>
+                                <div class="card mt-2" style="width: 80%; margin-right: 5em">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Descrição inicial do atendimento</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted" th:text="${#calendars.format(ficha.momentoCriacao, 'dd/MM/yyyy HH:mm')}"></h6>
+                                        <p class="card-text" th:text="${ficha.descricao}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row" th:if="${not #lists.isEmpty(outrasFichas)}">
+                        <div class="col">
+                            <h4>Prontuário (outros atendimentos)</h4>
+                            <table class="table-sm table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5em">Data</th>
+                                        <th>Situação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="outra: ${outrasFichas}" class="small">
+                                        <td>
+                                            <a th:text="${#calendars.format(outra.momentoCriacao, 'dd/MM/yyyy')}" th:href="@{/admin/atendimento/visualiza/__${outra.id}__}" />
+                                        </td>
+                                        <td>
+                                            <span  th:text="${outra.estadoConsulta.descricao}" th:if="${outra.suspeitoGrave}" class="badge badge-danger badge-pill"></span>
+                                            <span  th:text="${outra.estadoConsulta.descricao}" th:if="${outra.suspeitoLeve}" class="badge badge-warning badge-pill"></span>
+                                            <span  th:text="${outra.estadoConsulta.descricao}" th:unless="${outra.suspeito}"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col">
+                            <form th:action="@{/admin/atendimento/estado/__${ficha.id}__}" method="post">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="estado" class="font-weight-bold">Estado da consulta</label>
+                                            <select class="form-control" id="estado" name="estado" 
+                                                    th:disabled="${#lists.isEmpty(ficha.estadoConsulta.proximosEstadosPossiveis)}">
+                                                <option th:value="${ficha.estadoConsulta.id}" th:text="${ficha.estadoConsulta.descricao}" />-->
+                                                <option th:each="estado : ${ficha.estadoConsulta.proximosEstadosPossiveis}"
+                                                        th:value="${estado.id}"
+                                                        th:label="${estado.descricao}" />
+                                            </select>
+                                        </div>
+                                        <div class="text-right" th:unless="${#lists.isEmpty(ficha.estadoConsulta.proximosEstadosPossiveis)}">
+                                            <button type="submit" class="btn btn-outline-primary">
+                                                <i class="fas fa-exchange-alt mr-2"></i> Trocar estado
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row mt-2" th:unless="${ficha.estadoConsulta.atendimentoFinalizado}">
+                        <div class="col">
+                            <div class="btn-group" role="group">
+                                <a th:if="${ficha.estudante} != null" th:href="@{/admin/atendimento/removeestudante/__${ficha.id}__}" class="btn btn-outline-primary" onclick="return confirm('Confirma a remoção do estudante vinculado ao atendimento?')">Remove estudante</a>
+                                <a th:if="${ficha.responsavel} != null" th:href="@{/admin/atendimento/removeresponsavel/__${ficha.id}__}" class="btn btn-outline-primary" onclick="return confirm('Confirma a remoção do responsável vinculado ao atendimento?')">Remove responsável</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card mt-2" style="">
+                                <div class="card-body">
+                                    <h5 class="card-title">Dados</h5>
+                                    <span class="font-weight-bold">Nome</span>: <span th:text="${ficha.nome}"></span><br />
+                                    <span class="font-weight-bold">Data de nascimento</span>: <span th:text="${#calendars.format(ficha.dataNascimento, 'dd/MM/yyyy')}" /><br />
+                                    <span class="font-weight-bold">Idade</span>: <span th:text="${ficha.idade}"></span> anos<br />
+                                    <span class="font-weight-bold">Sexo</span>: <span th:text="${ficha.sexo.descricao}"></span><br />
+                                    <span class="font-weight-bold">CPF</span>: <span th:text="${ficha.cpf}" /><br />
+                                    <th:block th:if="${ficha.nomeResponsavelLegal}">
+                                        <span class="font-weight-bold">Responsável</span>: <span th:text="${ficha.nomeResponsavelLegal}"></span><br />
+                                        <span class="font-weight-bold">Data de nascimento do responsável</span>: <span th:text="${#calendars.format(ficha.dataNascimentoResponsavelLegal, 'dd/MM/yyyy')}" /><br />
+                                        <span class="font-weight-bold">CPF do responsável</span>: <span th:text="${ficha.cpfResponsavelLegal}" /><br />                                        
+                                    </th:block>                                                                        
+                                    <span class="font-weight-bold">Telefone</span>: <span th:text="${ficha.telefone}" /><br />
+                                    <span class="font-weight-bold">E-mail</span>: <span th:text="${ficha.email}" /><br />
+                                    <span class="font-weight-bold">Cidade</span>: <span th:text="${ficha.cidade.nome}" /><br />
+                                    <span class="font-weight-bold">Nome da mãe</span>: <span th:text="${ficha.nomeMae}" /><br />
+                                    <span class="font-weight-bold">Endereço</span>: <span th:text="${ficha.enderecoCompleto}" /><br />
+                                    <span class="font-weight-bold">CEP</span>: <span th:text="${ficha.cep}" /><br />
+                                    <span class="font-weight-bold">Bairro</span>: <span th:text="${ficha.bairro}" /><br />
+                                    <span class="font-weight-bold">Profissão</span>: <span th:text="${ficha.profissao}" /><br />
+                                    <span class="font-weight-bold">Convênio saúde</span>: <span th:text="${ficha.convenioSaude}" /><br />
+                                    <!--<span class="font-weight-bold">Viagem recente</span>: <span th:text="${viagemRecente}" /><br />-->
+                                    <span class="font-weight-bold">Contato caso confirmado</span>: <span th:text="${ficha.contatoCasoConfirmado}" /><br />
+                                    <span class="font-weight-bold">Início dos sintomas</span>: <span th:text="${#calendars.format(ficha.dataInicialSintomas, 'dd/MM/yyyy')}" /><br />
+                                    <span class="font-weight-bold">Sintomas</span>: <br />
+                                    <span th:if="${ficha.febre}" th:text="Febre"/><br th:if="${ficha.febre}"/>
+                                    <span th:if="${ficha.cefaleia}" th:text="Cefaleia"/><br th:if="${ficha.cefaleia}"/>
+                                    <span th:if="${ficha.mialgia}" th:text="Mialgia"/><br th:if="${ficha.mialgia}"/>
+                                    <span th:if="${ficha.tosse}" th:text="Tosse"/><br th:if="${ficha.tosse}"/>
+                                    <span th:if="${ficha.dispneia}" th:text="Dispneia"/><br th:if="${ficha.dispneia}"/>
+                                    <span class="font-weight-bold">Outros sintomas</span>: <span th:text="${ficha.outrosSintomas}"/><br />
+                                    <span class="font-weight-bold">Doenças crônicas:</span><br />
+                                    <span th:if="${ficha.diabetes}" th:text="Diabetes"/><br th:if="${ficha.diabetes}"/>
+                                    <span th:if="${ficha.hipertensao}" th:text="Hipertensão"/><br th:if="${ficha.hipertensao}"/>
+                                    <span th:if="${ficha.cardiopatia}" th:text="Cardiopatia"/><br th:if="${ficha.cardiopatia}"/>
+                                    <span th:if="${ficha.asma}" th:text="Asma"/><br th:if="${ficha.asma}"/>
+                                    <span class="font-weight-bold">Outras doenças</span>: <span th:text="${ficha.outrasDoencas}"/><br />
+                                    <span class="font-weight-bold">Medicação contínua</span>: <span th:text="${ficha.medicacaoContinua}" /><br />
+                                    <span class="font-weight-bold">Alergia à medicamento</span>: <span th:text="${ficha.alergiaMedicamentos}" /><br />
+                                    <span class="font-weight-bold">IP</span>: <span th:text="${ficha.ip}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM CONTEÚDO -->
+        </main>
+    </th:block>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    
+    <head th:replace="fragments/head.html :: head('Falha',~{::link})">
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/javatelemed/css/error.css}"/>
+    </head>
+    <body class="cover-javatelemed-bg">
+        <main role="main" class="vertical-center">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <p class="sad"></p>
+                    </div>
+                    <div class="col-md-6 text-md-left">
+                        <h1 class="text-faded" th:text="${status}">500</h1>
+                        <div class="lead">
+                            <p>Aconteceu algum erro ao realizar a tarefa</p>
+                            <p class="font-weight-normal text-muted" th:text="${message}">Could not proccess the request.</p>
+                        </div>
+                        <hr class="stroke mx-auto mx-md-0 bg-javatelemed" />
+                        <div class="text-faded">
+                            <p>Volte à página anterior e tente novamente.</p>
+                            <p>Se você acha que algo está errado, por favor nos avise nossos canais de comunicação.</p>
+                            <!--<button type="button" class="btn btn-outline-light">Report a problem</button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table style="display: none;">
+                <tr><td>Date</td><td th:text="${timestamp}"/></tr>
+                <tr><td>Path</td><td th:text="${path}"/></tr>
+                <tr><td>Error</td><td th:text="${error}"/></tr>
+                <tr><td>Status</td><td th:text="${status}"/></tr>
+                <tr><td>Message</td><td th:text="${message}"/></tr>
+                <tr><td>Exception</td><td th:text="${exception}"/></tr>
+                <tr><td>Trace</td><td><pre th:text="${trace}"/></td></tr>
+            </table>
+        </main>
+    </body>
+</html>

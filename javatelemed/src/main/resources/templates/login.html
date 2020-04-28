@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+    <head th:replace="fragments/head.html :: head('Autenticação',~{::link})">
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/javatelemed/css/login.css}"/>
+    </head>
+    <body class="cover-javatelemed-bg">
+        <main class="vertical-center">
+            <div class="form-box mx-auto min20">
+                <form th:action="@{/login}" method="post" class="with-logo rounded-sm bg-light text-dark shadow-lg" id="form-login">
+                    <div class="form-box-band">
+                        <div class="form-logo rounded-sm bg-javatelemed text-light mx-auto shadow-md">
+                            <!--<i class="fas fa-user-tie fa-fw"></i>-->
+                            <img src="../static/assets/javatelemed/img/javatelemed-logo-white.png"
+                                 th:src="@{/assets/javatelemed/img/javatelemed-logo-white.png}"
+                                 alt="JavaTelemed Covid-19 logo"
+                                 class="javatelemed-logo-md d-inline-block align-middle" />
+                        </div>
+                        <h2 class="h3 text-center my-0">Autenticação</h2>
+                    </div>
+                    <div class="form-box-band">
+                        <div class="form-group">
+                            <label class="sr-only" for="username">Usuário</label>
+                            <div class="input-group input-group-lg">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="far fa-id-card fa-fw"></i></div>
+                                </div>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="email@provedor.com" required="required"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="password">Senha</label>
+                            <div class="input-group input-group-lg">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-key fa-fw"></i></div>
+                                </div>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Senha" required="required"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group form-check">
+                                <!--
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input"/>
+                                    Remember me
+                                </label>
+                                -->
+                            </div>
+                            <a th:href="@{/public/esqueciSenha/}" class="text-secondary">Esqueceu a senha?</a>
+                        </div>
+                    </div>
+                    <div class="form-box-band text-center" th:if="${param.error != null || param.logout != null}">
+                        <span class="text-center text-danger d-block" th:if="${param.error}">
+                            Usuário ou senha inválidos.
+                        </span>
+                        <span class="text-center text-success d-block" th:if="${param.logout}">
+                            Sessão finalizada.
+                        </span>
+                    </div>
+                </form>
+                <div class="small text-light text-center my-1" style="opacity: .3;">
+                    <span th:text ="${'versão: ' + appInfo?.version}">name- version</span>
+                </div>
+                <!--
+                <p class="text-white-50 text-center small my-2">
+                    Don't have an account? <a th:href="@{/signup.html}" class="">Sign up here!</a>
+                </p>
+                -->
+            </div>
+        </main>
+        <th:block th:insert="fragments/scripts.html :: scripts(~{::script})">
+            <script type="text/javascript">
+                // função anônima para evitar conflitos com outras possíveis libs
+                function onSubmit() {
+                    $('#form-senha').submit();
+                }
+                (function ($) {
+                    // ADICIONE JS CODE AQUI
+                })(jQuery);
+            </script>
+        </th:block>
+    </body>
+</html>

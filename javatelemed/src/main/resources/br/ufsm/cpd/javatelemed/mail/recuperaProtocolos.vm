@@ -1,0 +1,19 @@
+Prezado(a) <b>$nome</b>, você solicitou os protocolos de seus atendimentos na plataforma JavaTelemed. Seguem as informações abaixo: 
+<table>
+<tr>
+    <td>Protocolo</td>
+    <td>Senha</td>
+</tr>
+  #foreach( $ps in $protocolosSenhas )
+        <tr>
+            <td>$ps.protocolo</td>
+            <td>$ps.senha</td>
+        </tr>
+  #end
+</table>
+<br >
+Para acessar algum atendimento, <a href="$host/visualizar" target="_blank">clique aqui</a> e informe os dados.
+<br>
+Caso não consiga clicar no link acima, copie o endereço abaixo e cole no seu navegador: 
+<br>
+$host/visualizar

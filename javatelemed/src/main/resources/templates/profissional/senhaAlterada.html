@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Titulo</title>
+        <main>
+            <div th:object="${usuario}" class="row">
+                <div class="col-md">
+                    <th:block th:insert="fragments/form.html :: out('CPF', *{cpf})"/>
+                </div>
+                <div class="col-md">
+                    <th:block th:insert="fragments/form.html :: out('Nome', *{nomeCompleto})"/>
+                </div>
+                <div class="col-md">
+                    <th:block th:insert="fragments/form.html :: out('Email', *{email})"/>
+                </div>
+            </div>
+            <div>Senha alterada com sucesso</div>
+            <span th:text="${#session.invalidate()}"/>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

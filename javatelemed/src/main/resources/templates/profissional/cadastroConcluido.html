@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Cadastro de Profissional</title>
+        <main>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Cadastro finalizado com sucesso</h5>
+                    Seu cadastro foi finalizado com sucesso. Acesse o sistema <a th:href="@{/login}">clicando aqui</a>
+                </div>
+            </div>
+        </main>
+    </th:block>
+</html>

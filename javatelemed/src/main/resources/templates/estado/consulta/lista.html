@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Lista estados de consulta</title>
+        <main>
+            <div class="table-responsive-md">
+                <table class="table table-striped table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width:8em">Ações</th>
+                            <th>Desrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="estadoConsulta : ${page.content}">
+                            <td>
+                                <a title="Visualizar" class="btn btn-light btn-sm" th:href="@{/admin/estado/consulta/view/__${estadoConsulta.id}__}"><i class="fas fa-folder-open"></i></a>
+                                <a title="Editar" class="btn btn-light btn-sm" th:href="@{/admin/estado/consulta/form/__${estadoConsulta.id}__}"><i class="fas fa-edit"></i></a>
+                                <a title="Excluir" class="btn btn-light btn-sm" th:href="@{/admin/estado/consulta/deleta/__${estadoConsulta.id}__}" onclick="return confirm('Confirma a exclusão?')"><i class="fas fa-trash"></i></a>
+                            </td>
+                            <td>
+                                <span th:text="${estadoConsulta.descricao}" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr/>
+            <ul class="nav nav-pills">
+                <li class="nav-item" aria-selected="true" th:each="i : ${#numbers.sequence(0, page.totalPages-1)}">
+                    <a th:href="@{/admin/estado/consulta/lista/(page=${i})}" th:text="${i} +1" class="nav-link" th:classappend="${page.number} == ${i} ? 'active' : ''"></a>
+                </li>
+            </ul>
+            <div class="form-group text-right">
+                <a class="btn btn-primary" th:href="@{/admin/estado/consulta/form/}"><i class="fas fa-plus-circle mr-2"></i> Novo</a>
+            </div>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

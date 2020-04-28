@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with="headerType='header_slim'">
+        <script src='https://www.google.com/recaptcha/api.js'></script>        
+        <title>Recuperar protocolos de atendimento</title>
+        <main>
+            <form action="#" th:action="@{/atendimento/recuperaprotocolos}" method="post" th:object="${command}" id="form-protocolos">
+                <div class="row">
+                    <div class="col">
+                        <th:block th:insert="fragments/form.html :: text('CPF', 'cpf')"/>
+                        <th:block th:insert="fragments/form.html :: text('E-mail', 'email')"/>
+                        <div class="form-group text-right">
+                            <button class="btn btn-primary g-recaptcha" data-badge="bottomleft" data-sitekey="" data-callback="onSubmit"><i class="fas fa-check-circle mr-2"></i> Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+        <script type="text/javascript">
+            function onSubmit() {
+                $('#form-protocolos').submit();
+            }
+            $('document').ready(function () {
+                $('#cpf').mask('999.999.999-99');
+            });
+        </script>
+    </th:block>
+</html>

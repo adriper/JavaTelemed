@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Cadastro de Profissional</title>
+        <main>
+            <form action="#" th:action="@{/admin/profissional/form/__${#objects.nullSafe(command.id, '')}__}" th:object="${command}" method="post"
+                   th:with="required=true">
+                <th:block th:insert="fragments/form.html :: text('Nome', 'nome')"/>
+                <th:block th:insert="fragments/form.html :: text('Sobrenome', 'sobrenome')"/>
+                <th:block th:insert="fragments/form.html :: text('CPF', 'cpf')"/>
+                <th:block th:insert="fragments/form.html :: text('E-mail', 'email')"/>
+                <!--<th:block th:insert="fragments/form.html :: password('Senha', 'senha')" th:if="${command.id} == null"/>-->
+                <th:block th:insert="fragments/form.html :: text('Data de Nascimento', 'dataNascimento')"/>
+                <th:block th:insert="fragments/form.html :: radioEnum('Sexo', 'sexo', 'descricao', ${sexos})"/>
+                <th:block th:insert="fragments/form.html :: text('Telefone', 'telefone')" th:with="required=false"/>
+                <th:block th:insert="fragments/form.html :: text('Número do registro profissional', 'numeroRegistro')" th:with="required=false"/>
+                <th:block th:insert="fragments/form.html :: radioEnum('Papel', 'papel', 'descricao', ${papeis})"/>
+                <th:block th:insert="fragments/form.html :: selectEntity('Tipo de profissional', 'tipoProfissional', 'descricao', ${tipos})"/>
+                <th:block th:insert="fragments/form.html :: actions"></th:block>
+            </form>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                $('#cpf').mask('999.999.999-99');
+                $('#dataNascimento').mask('99/99/9999');
+                $('#telefone').mask('(99)99999-9999');
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

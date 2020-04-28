@@ -1,0 +1,18 @@
+@charset "UTF-8";
+.text-danger-light {
+    opacity: .7;
+    color: #caf;
+}
+
+.accent {
+    color: #106E7C;
+}
+.text-faded {
+    opacity: .7;
+}
+
+.sad::before {
+    opacity: .3;
+    font-size: 8rem;
+    content: ':\00B4(';
+}

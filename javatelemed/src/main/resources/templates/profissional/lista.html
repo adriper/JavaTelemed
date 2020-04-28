@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Listagem de Profissionais</title>
+        <main>
+
+            <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#collapseSearch" aria-controls="collapseSearch" id="btnBuscar">
+                Buscar
+            </button>
+            <div class="card bg-light mt-3 collapse" id="collapseSearch">
+                <div class="card-body">
+                    <form action="#" th:action="@{/admin/profissional/lista/}" method="get">
+                        <div class="row">
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label for="tipoProfissional" class="font-weight-bold">Tipo profissional</label>
+                                    <select id="tipoProfissional" name="tipoProfissional" class="form-control">
+                                        <option value="">Todos os tipos</option>
+                                        <option th:each="tipo : ${tiposProfissionais}" 
+                                                th:value="${tipo.id}"
+                                                th:text="${tipo.descricao}"
+                                                th:selected="${tipoProfissional} != null and ${tipoProfissional.id} == ${tipo.id}"
+                                                />
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label for="nomeProfissional" class="font-weight-bold">Nome do profissional</label>
+                                    <input id="nomeProfissional" name="nome" class="form-control" th:value="${nome}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label for="cpfProfissional" class="font-weight-bold">CPF do profissional</label>
+                                    <input id="cpfProfissional" name="cpf" class="form-control" th:value="${cpf}"/>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label for="numeroRegistro" class="font-weight-bold">Número do registro do profissional</label>
+                                    <input id="numeroRegistro" name="numeroRegistro" class="form-control" th:value="${numeroRegistro}"/>
+                                </div>
+                                <div class="form-group text-right">
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-search mr-2"></i>  Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <table class="table table-sm table-striped" th:unless="${#lists.isEmpty(page.content)}">
+                    <thead>
+                        <tr>
+                            <th style="width:12em"></th>
+                            <th style="width:10em">CPF</th>
+                            <th>Nome</th>
+                            <th style="width:15em">Tipo</th>
+                            <th style="width:5em">Ativo?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${page.content}">
+                            <td>
+                                <a title="Visualizar" class="btn btn-light btn-sm" th:href="@{/admin/profissional/view/__${p.id}__}"><i class="fas fa-folder-open"></i></a>
+                                <a title="Editar" class="btn btn-light btn-sm" th:href="@{/admin/profissional/form/__${p.id}__}"><i class="fas fa-edit"></i></a>
+                                <a title="Inativar" th:if="${p.ativo}" class="btn btn-light btn-sm" th:href="@{/admin/profissional/inativar/__${p.id}__}" onclick="return confirm('Confirma a inativação?')"><i class="fas fa-user-slash"></i></a>
+                                <a title="Ativar" th:unless="${p.ativo}" class="btn btn-light btn-sm" th:href="@{/admin/profissional/ativar/__${p.id}__}" onclick="return confirm('Confirma a ativação?')"><i class="fas fa-user-plus"></i></a>
+                                <a title="Definir alunos - preceptoria" class="btn btn-light btn-sm" th:href="@{/admin/profissional/preceptor/__${p.id}__}" th:if="${p.podeSerPreceptor}"><i class="fas fa-chalkboard-teacher"></i></a>
+                            </td>
+                            <td th:text="${p.cpf}"></td>
+                            <td th:text="${p.nomeCompleto}"></td>
+                            <td th:text="${p.tipoProfissional.descricao}"></td>
+                            <td>
+                                <span th:if="${p.ativo}" class="badge badge-success badge-pill">Sim</span> 
+                                <span th:unless="${p.ativo}" class="badge badge-danger badge-pill">Não</span> 
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ul class="nav nav-pills" th:unless="${#lists.isEmpty(page.content)}">
+                    <li class="nav-item" aria-selected="true" th:each="i : ${#numbers.sequence(0, page.totalPages-1)}">
+                        <a th:href="@{__${url}__&page=__${i}__}" th:text="${i} +1" class="nav-link" th:classappend="${page.number} == ${i} ? 'active' : ''"></a>
+                    </li>
+                </ul>
+                <span class="badge badge-secondary" th:if="${#lists.isEmpty(page.content)}">Nenhum profissional encontrado</span>
+            </div>
+            <div class="form-group text-right">
+                <a th:href="@{/admin/profissional/form/}" class="btn btn-primary"><i class="fas fa-plus-circle mr-2"></i> Novo</a>
+            </div>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+                if ([[${buscou}]]) {
+                $('#btnBuscar').click();
+                }
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

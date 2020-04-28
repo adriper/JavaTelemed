@@ -1,0 +1,92 @@
+<!-- DEPRECADO! NÃO USE ISSO!!! -->
+<!-- TODO : remover -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head th:fragment="head">
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/font-awesome/css/all.css}"         href="../../static/assets/font-awesome/css/all.css" />
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/bootstrap/css/bootstrap.css}"      href="../../static/assets/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/javatelemed/css/main.css}"              href="../../static/assets/javatelemed/css/main.css" />
+        <title>JavaTelemed</title>
+    </head>
+    <body>
+        <header th:fragment="header" class="shadow-md">
+            <div class="collapse bg-javatelemed-dark" id="navbarHeader">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-md-7 py-4">
+                            <h4 class="text-white">Sobre</h4>
+                            <div class="text-light">                               
+                            </div>
+                        </div>
+                        <div class="col-sm-4 offset-md-1 py-4">
+                            <h4 class="text-white">Contato</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="https://www.facebook.com/" target="face" class="text-white"><i class="fab fa-facebook"></i> JavaTelemed no Facebook</a></li>
+                                <li><a href="https://www.instagram.com/" target="face" class="text-white"><i class="fab fa-instagram"></i> JavaTelemed no Instagram</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="navbar navbar-dark bg-javatelemed-darker shadow-sm">
+                <div class="container d-flex justify-content-between">
+                    <a href="#" class="navbar-brand d-flex align-items-center">
+                        <img src="../../static/assets/javatelemed/img/javatelemed-logo-white-2.png"
+                             th:src="@{/assets/javatelemed/img/javatelemed-logo-white-2.png}"
+                             alt="Lauduz Covid-19 logo"
+                             class="javatelemed-logo-sm d-inline-block align-middle" />
+                        <span class="text-uppercase font-weight-bold sr-only">Lauduz Covid-19</span>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="navbar navbar-dark bg-javatelemed-lighter shadow-sm">
+                <div class="container d-flex justify-content-between">
+                    <div class="btn-group">
+                    </div>
+                    <div class="btn-group">
+                        <a  th:if="${currentUser == null}" class="btn btn-outline-light" th:href="@{/login}">
+                            <i class="fas fa-sign-in-alt"></i> Autenticar
+                        </a>
+                        <div  th:if="${currentUser != null}" class="btn-group" role="group">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i> <span th:text ="${currentUser?.nome}">Nome do Usuário</span>
+                            </button>
+                            <div class="dropdown-menu  dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <a class="dropdown-item" th:href="@{/logout}">Sair</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main th:fragment="main">
+            <div class="container py-4">
+                fragment main
+                <!-- INICIO CONTEÚDO -->
+
+                <!-- FIM CONTEÚDO -->
+            </div>
+        </main>
+        <footer th:fragment="footer">
+            <div class="container">
+                <hr class="stroke my-0"/>
+            </div>
+            <div class="container py-1 small text-muted">
+                <div class="d-flex justify-content-between">
+                    <span th:text ="${appInfo?.name + ' - ' + appInfo?.version}">name- version</span>
+                    <span th:text ="${'build ' + appInfo?.timestamp}">build timestamp</span>
+                </div>
+            </div>
+        </footer>
+        <script th:src="@{/assets/jquery/js/jquery.js}" src="../../static/assets/jquery/js/jquery.js"></script>
+        <script th:src="@{/assets/bootstrap/js/bootstrap.bundle.js}" src="../../static/assets/bootstrap/js/bootstrap.bundle.js"></script>
+    </body>
+</html>

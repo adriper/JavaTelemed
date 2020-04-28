@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Cadastro de tipo de profissional</title>
+        <main>
+            <form action="#" th:action="@{/admin/profissional/formTipo/__${#objects.nullSafe(command.id, '')}__}" th:object="${command}" method="post">
+                <th:block th:insert="fragments/form.html :: text('Descrição', 'descricao')"/>
+                <th:block th:insert="fragments/form.html :: text('Conselho', 'descricaoConselho')"/>
+                <th:block th:insert="fragments/form.html :: text('Sigla Conselho', 'siglaConselho')"/>
+                <th:block th:insert="fragments/form.html :: radioTrueFalse('Permite videoconferência?', 'videoconferencia', 'Sim', 'Não')"/>
+                <th:block th:insert="fragments/form.html :: radioTrueFalse('Permite prescrição?', 'prescricao', 'Sim', 'Não')"/>
+                <div class="form-group">
+                    <label for="estados" class="font-weight-bold">Estados permitidos</label>
+                    <ul>
+                        <li th:each="estado : ${estadosDisponiveis}">
+                            <input type="checkbox" th:field="*{estadosConsulta}" th:value="${estado.id}"/>
+                            <label th:for="${#ids.prev('estadosConsulta')}" 
+                                   th:text="${estado.descricao}">descrição estado</label>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <th:block th:insert="fragments/form.html :: actions"></th:block>
+                </div>
+            </form>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

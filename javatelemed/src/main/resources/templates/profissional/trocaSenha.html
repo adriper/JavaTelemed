@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Troca de Senha</title>
+        <main>
+            <div class="card mb-2">
+                <div class="card-body bg-light">
+                    <h5 class="card-title">Regras para senha</h5>
+                    <div th:each="r : ${regrasSenha}">
+                        <div th:text="${r}"></div>
+                    </div>
+                </div>
+            </div>
+            <div th:object="${usuario}" class="row">
+                <div class="col-md">
+                    <th:block th:insert="fragments/form.html :: out('CPF', *{cpf})"/>
+                </div>
+                <div class="col-md">
+                    <th:block th:insert="fragments/form.html :: out('Nome', *{nomeCompleto})"/>
+                </div>
+                <div class="col-md">
+                    <th:block th:insert="fragments/form.html :: out('Email', *{email})"/>
+                </div>
+            </div>
+            <form action="#" th:action="@{/profissional/trocaSenha/}" th:object="${command}" method="post">
+                <div class="row">
+                    <div class="col-md">
+                        <th:block th:insert="fragments/form.html :: password('Senha Atual', 'senhaAtual')"/>
+                    </div>
+                    <div class="col-md">
+                        <th:block th:insert="fragments/form.html :: password('Nova Senha', 'novaSenha1')"/>
+                    </div>
+                    <div class="col-md">
+                        <th:block th:insert="fragments/form.html :: password('Confirma Nova Senha', 'novaSenha2')"/>
+                    </div>
+                </div>
+                <th:block th:insert="fragments/form.html :: actions"></th:block>
+            </form>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

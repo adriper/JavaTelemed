@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+
+        <link rel="stylesheet" type="text/css" th:href="@{/assets/select2/css/select2.min.css}"      href="../../static/assets/select2/css/select2.min.css" />
+
+        <title>Definir cidades sede de atuação</title>
+        <main>
+            <form action="#" th:action="@{/admin/profissional/formCidadeSede/__${#objects.nullSafe(command.profissional.id, '')}__}" th:object="${command}" method="post">
+                <div th:object="${command.profissional}">
+                    <h3 class="h4">Profissional</h3>
+                    <div class="row">
+                        <div class="col-md">
+                            <th:block th:insert="fragments/form.html :: out('CPF', *{cpf})"/>
+                        </div>
+                        <div class="col-md">
+                            <th:block th:insert="fragments/form.html :: out('Nome', *{nomeCompleto})"/>
+                        </div>
+                        <div class="col-md">
+                            <th:block th:insert="fragments/form.html :: out('Email', *{email})"/>
+                        </div>
+                    </div>
+
+                    <h3 class="h4">Cidades Sede</h3>
+                    <table class="table table-sm table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Cidade</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c : *{cidadesSede}">
+                                <td th:text="${c.nome}"></td>
+                                <td th:text="${c.estado.sigla}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="h4">Adicionar Cidade</h3>
+                <div>
+                    <label for="estado" class="font-weight-bold">Estado</label>
+                    <select id="estado" class="form-control">
+                        <option value="">---Selecione---</option>
+                        <option th:each="e : ${estados}" 
+                                th:value="${e.id}" 
+                                th:text="${e.nome}">Estado</option>
+                    </select>
+                </div>
+                <th:block th:insert="fragments/form.html :: selectEntity('Cidade', 'cidade', 'nome', ${cidades})"/>
+
+                <th:block th:insert="fragments/form.html :: actions"></th:block>
+            </form>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                $('document').ready(function () {
+                    $('#estado').change(function () {
+                        var idEstado = $(this).val();
+                        $.getJSON("[[@{/estado/cidadesSede?idEstado=}]]" + idEstado, function (cidades) {
+                            $('#cidade').find('option').remove().end().append('<option value="">-- Selecione --</option>').val('');
+                            $.each(cidades, function (key, cidade) {
+                                $('#cidade').append($('<option>', {
+                                    value: cidade.id,
+                                    text: cidade.nome
+                                }));
+                            });
+                            $('#cidade').select2({
+                                language: 'pt-br'
+                            });
+                        });
+                    });
+                });
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

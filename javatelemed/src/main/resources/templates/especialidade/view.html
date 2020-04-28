@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Visualização de Especialidade</title>
+        <main>
+            <div th:object="${especialidade}" class="row">
+                <div class="col-md-4">
+                    <th:block th:insert="fragments/form.html :: out('Código', *{codigo})"/>
+                </div>
+                <div class="col-md">
+                    <th:block th:insert="fragments/form.html :: out('Descrição', *{descricao})"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive-md">
+                        <table class="table table-sm trable-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10em">Tipo profissional</th>
+                                    <th style="width: 10em">Número registro</th>
+                                    <th>Nome completo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="profissional : ${especialidade.profissionais}">
+                                    <td th:text="${profissional.tipoProfissional.descricao}"></td>
+                                    <td th:text="${profissional.numeroRegistro}"></td>
+                                    <td><a th:text="${profissional.nomeCompleto}" th:href="@{/admin/profissional/view/__${profissional.id}__}"</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

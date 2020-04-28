@@ -1,0 +1,106 @@
+<!--
+  - Fragmento que contém o topo (header) da página.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <!-- header apenas com a barra de logo -->
+    <th:block th:fragment="header_slim" th:with="container=${container != null ? container : 'container'}">
+        <header  class="shadow-md">
+            <th:block th:insert="this :: logo_navbar"></th:block>
+        </header>
+    </th:block>
+
+    <!-- header com a barra de logo e a barra de usuário -->
+    <th:block th:fragment="header_full" th:with="container=${container != null ? container : 'container'}">
+        <header class="shadow-md">
+            <th:block th:insert="this :: logo_navbar"></th:block>
+            <th:block th:insert="this :: user_navbar"></th:block>
+        </header>
+    </th:block>
+
+    <!-- definição da barra de logo -->
+    <th:block th:fragment="logo_navbar" th:with="container=${container != null ? container : 'container'}">
+        <div class="collapse bg-javatelemed-dark" id="navbarHeader">
+            <div th:class="|${container}|">
+                <div class="row">
+                    <div class="col-sm-8 col-md-7 py-4">
+                    </div>
+                    <div class="col-sm-4 offset-md-1 py-4">
+                        <h4 class="text-white">Contato</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.facebook.com/" target="face" class="text-white"><i class="fab fa-facebook"></i> JavaTelemed no Facebook</a></li>
+                            <li><a href="https://www.instagram.com/" target="face" class="text-white"><i class="fab fa-instagram"></i> JavaTelemed no Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar navbar-dark bg-javatelemed-darker shadow-sm px-0">
+            <div th:class="|${container} d-flex justify-content-between|">
+                <a th:href="@{/}" class="navbar-brand d-flex align-items-center">
+                    <img src="../../static/assets/javatelemed/img/javatelemed-logo-white-2.png"
+                         th:src="@{/assets/javatelemed/img/javatelemed-logo-white-2.png}"
+                         alt="Lauduz Covid-19 logo"
+                         class="javatelemed-logo-sm d-inline-block align-middle" />
+                    <span class="text-uppercase font-weight-bold sr-only">Lauduz Covid-19</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </th:block>
+
+    <!-- definição da barra de usuário -->
+    <th:block th:fragment="user_navbar" th:with="container=${container != null ? container : 'container'}">
+        <div class="navbar navbar-dark bg-javatelemed-lighter shadow-sm px-0">
+            <div th:class="|${container} d-flex justify-content-between|">
+                <!-- MENU DA ESQUERDA -->
+                <div class="btn-group my-1">
+                    <th:block  th:if="${currentUser?.admin} or ${currentUser?.gestorProfissional}">
+                        <div class="btn-group" th:if="${currentUser?.admin}or ${currentUser?.gestorProfissional}">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-users-cog"></i> <span>Administração</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" th:href="@{/admin/profissional/lista/}">Profissionais</a>
+                                <a class="dropdown-item" th:if="${currentUser?.admin}" th:href="@{/admin/profissional/listaTipo/}">Tipo de profissional</a>
+                                <a class="dropdown-item" th:if="${currentUser?.admin}" th:href="@{/admin/estado/consulta/lista/}">Estado de consulta</a>
+                                <a class="dropdown-item" th:if="${currentUser?.admin}" th:href="@{/admin/especialidade/lista/}">Especialidades</a>
+                                <a class="dropdown-item" th:if="${currentUser?.admin}" th:href="@{/admin/localizacao/cidade/lista/}">Cidades</a>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${currentUser != null}">
+                        <a class="btn btn-outline-light"th:href="@{/user/atendimento/lista/}" >
+                            <i class="fas fa-hospital"></i> Atendimentos
+                        </a>
+                        <a class="btn btn-outline-light"th:href="@{/user/suspeitos/lista/?situacaoSuspeito=L}" >
+                            <i class="fas fa-phone"></i> Acompanhar Suspeitos
+                        </a>
+                    </th:block>
+                    <th:block th:if="${currentUser?.podeSerPreceptor}">
+                        <a class="btn btn-outline-light"th:href="@{/user/preceptor/}" >
+                            <i class="fas fa-chalkboard-teacher"></i> Definir alunos
+                        </a>
+                    </th:block>
+                </div>
+                <!-- MENU DA DIREITA -->
+                <div class="btn-group my-1">
+                    <a  th:if="${currentUser == null}" class="btn btn-outline-light" th:href="@{/login}">
+                        <i class="fas fa-sign-in-alt"></i> Autenticar
+                    </a>
+                    <div  th:if="${currentUser != null}" class="btn-group" role="group">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i> <span th:text ="${currentUser?.nomeSobrenomePrefix}">Nome do Usuário</span>
+                        </button>
+                        <div class="dropdown-menu  dropdown-menu-right">
+                            <a class="dropdown-item" th:href="@{/user/profissional/view/}">Ver meu perfil</a>
+                            <a class="dropdown-item" th:href="@{/profissional/trocaSenha/}">Trocar minha senha</a>
+                            <a class="dropdown-item" th:href="@{/logout}">Sair</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</html>

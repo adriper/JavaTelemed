@@ -1,0 +1,11 @@
+Prezado(a) <b>$nome</b>,
+houve uma alteração no seu atendimento na plataforma JavaTelemed e ele está na situação <b>$estado</b>.
+<br>
+Seus dados de acesso ao atendimento são: <b>protocolo</b>: $protocolo, <b>senha</b>: $senha
+<br>
+Para acessar o atendimento, 
+<a href="${host}/atendimento/visualizar?protocolo=$protocolo&senha=$senha">clique aqui</a>
+<br>
+Caso não consiga clicar no link acima, copie o endereço abaixo e cole no seu navegador: 
+<br>
+${host}/atendimento/visualizar?protocolo=$protocolo&senha=$senha

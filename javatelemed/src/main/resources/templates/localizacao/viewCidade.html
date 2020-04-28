@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Visualiza cidade</title>
+        <main>
+            <div th:object="${cidade}">
+                <th:block th:insert="fragments/form.html :: out('Código', *{codigo})"/>
+                <div>
+                    <th:block th:insert="fragments/form.html :: out('Nome', *{nome})"/>
+                </div>
+                <div>
+                    <th:block th:insert="fragments/form.html :: out('Estado', *{estado.nome})"/>
+                </div>
+                <div>
+                    <th:block th:insert="fragments/form.html :: out('Cidade sede de atendimento?', *{atendimento} ? 'Sim' : 'Não')"/>
+                </div>
+                <h3 class="h4">Cidades Atendidas</h3>
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Cidade</th>
+                            <th style="width:10em">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : *{cidadesAtendidas}">
+                            <td th:text="${c.nome}"></td>
+                            <td th:text="${c.estado.sigla}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row text-right">
+                    <div class="col">
+                        <a class="btn btn-light" th:href="@{/admin/localizacao/cidade/atendidas/__*{id}__}"><i class="fas fa-city mr-2"></i> Cidades atendidas</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </th:block>
+</html>

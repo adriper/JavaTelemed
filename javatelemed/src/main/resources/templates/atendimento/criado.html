@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Atendimento criado com sucesso</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script th:src="@{/assets/jquery/js/jquery.min.js}"></script>
+        <script th:src="@{/assets/jquery/js/jquery.mask.min.js}"></script>
+    </head>
+    <body>       
+        <h1>Atendimento Criado com Sucesso!</h1>
+        <div>
+            <div>
+                <p>Protocolo de atendimento</p>
+                <p th:text="${ficha.protocolo}"></p>
+            </div>
+            <div>
+                <p>Senha de atendimento</p>
+                <p th:text="${ficha.senha}"></p>
+            </div>
+        </div>
+</html>

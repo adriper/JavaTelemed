@@ -1,0 +1,13 @@
+
+Prezado(a) <b>$token.profissional.nomeSobrenomePrefix</b>,
+foi solicitada recuperação de sua senha no sistema JavaTelemed.
+<br>
+Para definir uma nova senha clique no link abaixo.<br>
+<a href="${host}/public/redefinirSenha/$token.token">Redefinir Senha</a>
+<br>
+Caso não consiga clicar no link acima, copie o endereço abaixo e cole no seu navegador: 
+<br>
+${host}/public/redefinirSenha/$token.token
+<br>
+Caso você não tenha feito esta solicitação, basta ignorar este e-mail. 
+Sua senha não será modificada.

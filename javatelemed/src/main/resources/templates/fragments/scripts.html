@@ -1,0 +1,15 @@
+<!--
+  - Fragmento que contém a lista de scripts importados por padrão.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:fragment="scripts(scripts)">
+        <script th:src="@{/assets/jquery/js/jquery.js}"></script>
+        <script th:src="@{/assets/jquery/js/jquery.mask.min.js}"></script>
+        <script th:src="@{/assets/bootstrap/js/bootstrap.bundle.js}"></script>
+        <script th:src="@{/assets/select2/js/select2.min.js}"></script>
+        <script th:src="@{/assets/select2/js/i18n/pt-BR.js}"></script>
+
+        <!--/* Per-page placeholder for additional scripts */-->
+        <th:block th:replace="${scripts} != null ? ${scripts} : ~{}" />
+    </th:block>
+</html>

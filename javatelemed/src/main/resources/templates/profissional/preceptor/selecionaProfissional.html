@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Preceptoria - Seleciona profissional</title>
+        <main>
+            <div class="table-responsive-md">
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>CPF</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Ativo?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${profissionais}">
+                            <td>
+                                <a th:href="@{/admin/profissional/preceptor/__${p.id}__}" title="abrir" class="btn btn-light btn-sm">
+                                    <i class="fas fa-folder-open"></i>
+                                </a>
+                            </td>
+                            <td th:text="${p.cpf}"></td>
+                            <td th:text="${p.nomeCompleto}"></td>
+                            <td th:text="${p.email}"></td>
+                            <td th:text="${p.ativo ? 'Sim' : 'Não'}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

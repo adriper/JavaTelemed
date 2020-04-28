@@ -1,0 +1,376 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with="container='container-fluid', headerType='header_slim'">
+        <script src='https://www.google.com/recaptcha/api.js'></script>        
+        <title>Solicitar novo atendimento</title>
+        <main>
+            <div class="card  bg-light ">
+                <div class="card-body">
+                    Preencha a ficha abaixo com seus dados. Ao final, será gerado um número de protocolo e senha e você será atendido.
+                </div>
+            </div>
+            <form action="#" th:action="@{/atendimento/novo?sede=__*{cidadeSedeAtendimento.id}__}" th:object="${command}" method="post" class="mt-2" id="form-ficha">
+                <h5 th:if="${#fields.hasErrors('*')}">
+                    <span class="badge badge-danger badge-pill"> Seu formulário possui erros.</span>
+                </h5>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="nome">Nome completo do paciente</label> 
+                            <input type="text" th:field="*{nome}" id="nome" class="form-control"/>
+                            <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="badge badge-danger">Nome incorreto</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="cpf">CPF do paciente</label>
+                            <input type="text" th:field="*{cpf}" class="cpf form-control" id="cpf"/>
+                            <span th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}" class="badge badge-danger">CPF incorreto</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="nascimento">Data de nascimento do paciente</label>
+                            <input type="text" th:field="*{dataNascimento}" class="data form-control" id="nascimento"/>
+                            <span th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}" class="badge badge-danger">Data de Nascimento incorreta</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="sexo">Sexo do paciente</label> 
+                            <select th:field="*{sexo}" class="form-control" id="sexo">
+                                <option value="">-- Selecione -- </option>
+                                <option th:each="sexo : ${sexos}" 
+                                        th:value="${sexo}" 
+                                        th:text="${sexo.descricao}">Wireframe</option>
+                            </select>
+                            <span th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}" class="badge badge-danger">Sexo incorreto</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="email">E-mail</label> 
+                            <input type="text" th:field="*{email}"  class="form-control" id="email"/>
+                            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="badge badge-danger">E-mail incorreto</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="telefone">Telefone</label>
+                            <input type="text" th:field="*{telefone}" class="telefone form-control" id="telefone"/>
+                            <span th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}" class="badge badge-danger">Telefone incorreto</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="nomeMae">Nome da mãe do paciente</label>
+                            <input type="text" th:field="*{nomeMae}"  class="form-control" id="nomeMae"/>
+                            <span th:if="${#fields.hasErrors('nomeMae')}" th:errors="*{nomeMae}" class="badge badge-danger">Nome da Mae incorreto</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="profissao">Profissão do paciente</label>
+                            <input type="text" th:field="*{profissao}"  class="form-control" id="profissao"/>
+                            <span th:if="${#fields.hasErrors('profissao')}" th:errors="*{profissao}" class="badge badge-danger">Profissão incorreta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="divResponsavelLegal" style="">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="nomeResponsavelLegal">Nome do responsável</label> 
+                            <input type="text" th:field="*{nomeResponsavelLegal}" id="nomeResponsavelLegal" class="form-control" readonly="readonly"/>
+                            <span th:if="${#fields.hasErrors('nomeResponsavelLegal')}" th:errors="*{nomeResponsavelLegal}" class="badge badge-danger">Nome incorreto</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="cpfResponsavelLegal">CPF do responsável</label>
+                            <input type="text" th:field="*{cpfResponsavelLegal}" class="cpf form-control" id="cpfResponsavelLegal" readonly="readonly"/>
+                            <span th:if="${#fields.hasErrors('cpfResponsavelLegal')}" th:errors="*{cpfResponsavelLegal}" class="badge badge-danger">CPF incorreto</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="dataNascimentoResponsavelLegal">Data de nascimento do responsável</label>
+                            <input type="text" th:field="*{dataNascimentoResponsavelLegal}" class="data form-control" id="dataNascimentoResponsavelLegal" readonly="readonly"/>
+                            <span th:if="${#fields.hasErrors('dataNascimentoResponsavelLegal')}" th:errors="*{dataNascimentoResponsavelLegal}" class="badge badge-danger">Data de Nascimento incorreta</span>
+                        </div>
+                    </div>                    
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="cep">CEP</label>
+                            <input type="text" th:field="*{cep}"  class="form-control" id="cep"/>
+                            <span th:if="${#fields.hasErrors('cep')}" th:errors="*{cep}" class="badge badge-danger">cep incorreta</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="cidade">Cidade</label>
+                            <select th:field="*{cidade}" id="cidade" class="form-control">
+                                <option th:value="0">-- Selecione -- </option>
+                                <option th:value="*{cidadeSedeAtendimento.id}" th:text="*{cidadeSedeAtendimento.nome}" th:data-ibge="*{cidadeSedeAtendimento.codigo}" disabled>
+                                    Santa Maria</option>
+                                <option th:each="c : *{cidadeSedeAtendimento.cidadesAtendidas}"  
+                                        th:value="${c.id}" 
+                                        th:text="${c.nome}" 
+                                        th:data-ibge="${c.codigo}"
+                                        disabled>
+                                    Cidade</option>
+                            </select>
+                            <span th:if="${#fields.hasErrors('cidade')}" th:errors="*{cidade}" class="badge badge-danger">cidade incorreta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="endereco">Endereço </label>
+                            <input type="text" th:field="*{endereco}"  class="form-control" id="endereco" readonly/>
+                            <span th:if="${#fields.hasErrors('endereco')}" th:errors="*{endereco}" class="badge badge-danger">Endereço incorreto</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="numeroEndereco">Número de sua casa (apartamento) e complemento</label>
+                            <input type="text" th:field="*{numeroEndereco}"  class="form-control" id="numeroEndereco"/>
+                            <span th:if="${#fields.hasErrors('numeroEndereco')}" th:errors="*{numeroEndereco}" class="badge badge-danger">Numero endereco incorreto</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="bairro">Bairro</label>
+                            <input type="text" th:field="*{bairro}" class="form-control" id="bairro" readonly/>
+                            <span th:if="${#fields.hasErrors('bairro')}" th:errors="*{bairro}" class="badge badge-danger">Bairro incorreto</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="planosaude">Possui plano de saúde? Se sim, qual(is)?</label>
+                            <input type="text" th:field="*{convenioSaude}" class="form-control" id="planosaude"/>
+                            <span th:if="${#fields.hasErrors('convenioSaude')}" th:errors="*{bairro}" class="badge badge-danger">Convenio saúude incorreto</span>
+                        </div>
+                    </div>
+                </div>               
+                <!--                            <label for="estado">Estado</label> 
+                            <select name="estado" id="estado" class="form-control">
+                                <option value=""> -- Selecione --</option>
+                                <option th:each="estado : ${estados}" 
+                                        th:selected="${command.cidade != null && command.cidade.estado.id == estado.id}"
+                                        th:value="${estado.id}" 
+                                        th:text="${estado.nome}">Estado</option>
+                            </select>                                <div class="row">
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label for="viagemrecente">Realizou alguma viagem recente? Para onde?</label>
+                                    <input type="text" th:field="*{viagemRecente}" class="form-control" id="viagemrecente"/>
+                                    <span th:if="${#fields.hasErrors('viagemRecente')}" th:errors="*{viagemRecente}" class="badge badge-danger">Viagem recente incorreta</span>
+                                </div>
+                            </div>
+                                    <select th:field="*{cidade}" id="cidade" class="form-control">
+                    <option value="@{null}">-- Selecione -- </option>
+                    <option th:each="cidade : ${cidades}"  
+                            th:value="${cidade.id}" 
+                            th:text="${cidade.nome}">Cidade</option>
+                </select>
+        
+        </div>-->
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="contatocaso">Teve contato com algum caso confirmado?</label>
+                            <input type="text" th:field="*{contatoCasoConfirmado}" class="form-control" id="contatocaso"/>
+                            <span th:if="${#fields.hasErrors('contatoCasoConfirmado')}" th:errors="*{contatoCasoConfirmado}" class="badge badge-danger">contato caso  confirmado incorreta</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="datasintomas">Quando iniciaram os sintomas (data)?</label>
+                            <input type="text" th:field="*{dataInicialSintomas}" class="data form-control" id="datasintomas"/>
+                            <span th:if="${#fields.hasErrors('dataInicialSintomas')}" th:errors="*{dataInicialSintomas}" class="badge badge-danger">Data inicial de sintomas incorreta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            Você teve algum dos sintomas abaixo?
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{febre}"  id="febre"/>
+                                    <label for="febre">Febre</label>
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{cefaleia}" id="cefaleia"/>
+                                    <label for="cefaleia">Dor de cabeça</label>
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{mialgia}" id="mialgia"/>
+                                    <label for="mialgia">Dor no corpo</label>
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{tosse}" id="tosse"/>
+                                    <label for="tosse">Tosse</label>
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{dispneia}" id="dispneia"/>
+                                    <label for="dispneia">Falta de ar</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold"  for="outrosintomas">Teve algum outro sintoma? Se sim, qual(is)?</label>
+                            <input type="text" th:field="*{outrosSintomas}"  class="form-control" id="outrosintomas"/>
+                            <span th:if="${#fields.hasErrors('outrosSintomas')}" th:errors="*{outrosSintomas}" class="badge badge-danger">outrosSintomas incorreta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            Possui alguma dessas doenças crônica?
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{diabetes}" id="diabetes"/>
+                                    <label for="diabetes">Diabetes</label>
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{hipertensao}" id="hipertensao"/>
+                                    <label for="hipertensao">Hipertensao</label>
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{cardiopatia}" id="cardiopatia"/>
+                                    <label for="cardiopatia">Cardiopatia</label>
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox" th:field="*{asma}" id="asma"/>
+                                    <label for="asma">Asma</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold"  for="outradoenca">Tem outra doença crônica?  Se sim, qual(is)?</label>
+                            <input type="text" th:field="*{outrasDoencas}" class="form-control" id="outradoenca"/>
+                            <span th:if="${#fields.hasErrors('outrasDoencas')}" th:errors="*{outrasDoencas}" class="badge badge-danger">outras doencas incorreta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold"  for="medicamentocontinuo">Utiliza algum medicamento contínuo? Se sim, qual?</label>
+                            <input type="text" th:field="*{medicacaoContinua}"  class="form-control" id="medicamentocontinuo"/>
+                            <span th:if="${#fields.hasErrors('medicacaoContinua')}" th:errors="*{medicacaoContinua}" class="badge badge-danger">medicacaoContinua incorreta</span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="font-weight-bold"  for="alergiamedicamento">Tem alergia a algum medicamento? Se sim, qual(is)?</label>
+                            <input type="text" th:field="*{alergiaMedicamentos}"  class="form-control" id="alergiamedicamento"/>
+                            <span th:if="${#fields.hasErrors('alergiaMedicamentos')}" th:errors="*{alergiaMedicamentos}" class="badge badge-danger">alergiaMedicamentos incorreta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="font-weight-bold"  for="descricao">Descreva o que você está sentindo</label>
+                            <textarea th:field="*{descricao}" class="form-control" id="descricao"></textarea>
+                            <span th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="badge badge-danger">descricao incorreta</span>
+                        </div>
+                    </div>
+                </div>                
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <input type="checkbox" id="declaracaoVeracidade" th:field="*{declaracaoVeracidade}"/>
+                            <label class="font-weight-bold" for="declaracaoVeracidade">Declaro que todas as informações inseridas são verdadeiras</label>
+                            <span th:if="${#fields.hasErrors('declaracaoVeracidade')}" th:errors="*{declaracaoVeracidade}" class="badge badge-danger">declaracaoVeracidade incorreta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group mt-2 text-right">
+                    <button class="btn btn-primary g-recaptcha" data-badge="bottomleft" data-sitekey="" data-callback="onSubmit"><i class="fas fa-check-circle mr-2"></i> Enviar</button>
+                </div>
+            </form>
+        </main>
+        <script type="text/javascript">
+            function onSubmit() {
+                $('#form-ficha').submit();
+            }
+            function calculateIdade(nascimento) {
+                var ageDifMs = Date.now() - nascimento.getTime();
+                var ageDate = new Date(ageDifMs); // miliseconds from epoch
+                return Math.abs(ageDate.getUTCFullYear() - 1970);
+            }
+            $('document').ready(function () {
+                $(".data").mask("99/99/9999");
+                $(".cpf").mask("999.999.999-99");
+                $(".telefone").mask("(99)99999-9999");
+                $("#cep").mask("99999999");
+                $("#nascimento").keyup(function () {
+                    if ($(this).val().length === 10) {
+                        var parts = $(this).val().split("/");
+                        var dt = new Date(parseInt(parts[2], 10),
+                                parseInt(parts[1], 10) - 1,
+                                parseInt(parts[0], 10));
+                        if (calculateIdade(dt) < [[${idadeMinimaPaciente}]]) {
+                            $('#divResponsavelLegal').find('input').removeAttr('readonly');
+                        }
+                    } else {
+                        $('#divResponsavelLegal').find('input').attr('readonly', 'readonly');
+                    }
+                });
+                $("#nascimento").keyup();
+
+                $("#cep").keyup(function () {
+                    $('#cidade').find('option').attr('disabled', 'disabled');
+                    $('#endereco').attr('readonly', 'readonly');
+                    $('#bairro').attr('readonly', 'readonly');
+                    if ($(this).val().length === 8) {
+                        $.getJSON('[[@{/atendimento/cep/}]]' + $(this).val(), function (retorno) {
+                            if (retorno.ibge) {
+                                var cidade = $('#cidade').find('[data-ibge="' + retorno.ibge + '"]');
+                                if (cidade.length) {
+                                    cidade.removeAttr('disabled');
+                                    cidade.attr('selected', 'selected');
+                                    if (retorno.podeEditarLogradouro){
+                                        $('#endereco').removeAttr('readonly');                                        
+                                        $('#bairro').removeAttr('readonly');                                        
+                                    }else{
+                                        $('#bairro').val(retorno.bairro);
+                                        $('#endereco').val(retorno.logradouro);
+                                    }
+                                } else {
+                                    alert('O CEP indicado não corresponde a uma cidade de atendimento');
+                                }
+                            } else {
+                                alert('CEP inválido!')
+                            }
+                        });
+                    }
+                });
+                $("#cep").keyup();
+            });
+        </script>
+    </th:block>
+</html>

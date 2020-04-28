@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Visualiza profissional</title>
+        <main>
+            <div th:object="${profissional}">
+                <th:block th:insert="fragments/form.html :: out('CPF', *{cpf})"/>
+                <th:block th:insert="fragments/form.html :: out('Nome Completo', *{nomeCompleto})"/>
+                <th:block th:insert="fragments/form.html :: out('E-mail', *{email})"/>
+                <th:block th:insert="fragments/form.html :: out('Data de nascimento', *{#calendars.format(dataNascimento,'dd/MM/yyyy')})"/>
+                <th:block th:insert="fragments/form.html :: out('Sexo', *{sexo.descricao})"/>
+                <th:block th:insert="fragments/form.html :: out('Telefone', *{telefone})"/>
+                <th:block th:insert="fragments/form.html :: out('Número do registro profissional', *{numeroRegistro})"/>
+                <th:block th:insert="fragments/form.html :: out('Papel', *{papel.descricao})"/>
+                <th:block th:insert="fragments/form.html :: out('Tipo de Profissional', *{tipoProfissional.descricao})"/>
+                <th:block th:insert="fragments/form.html :: out('Ativo?', *{ativo ? 'Sim' : 'Não'})"/>
+                <div class="row">
+                    <div class="col">
+                        <h3 class="h4">Especialidades</h3>
+                        <table class="table table-sm table-striped table-hover" th:unless="*{#lists.isEmpty(especialidades)}">
+                            <thead>
+                                <tr>
+                                    <th th:if="${podeEditar}" style="width: 3em"></th>
+                                    <th style="width: 5em">Código</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="e : *{especialidades}">
+                                    <td th:if="${podeEditar}"><a title="Excluir" class="btn btn-light btn-sm" th:href="@{/admin/profissional/deletaEspecialidade/__*{id}__(especialidade=${e.id})}" onclick="return confirm('Confirma a exclusão?')"><i class="fas fa-trash"></i></a></td>
+                                    <td th:text="${e.codigo}"></td>
+                                    <td th:text="${e.descricao}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <span class="badge badge-secondary" th:if="*{#lists.isEmpty(especialidades)}">Nenhuma especialidade definida</span>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <h3 class="h4">Cidades Sede</h3>
+                        <table class="table table-sm table-striped table-hover" th:unless="*{#lists.isEmpty(cidadesSede)}">
+                            <thead>
+                                <tr>
+                                    <th th:if="${podeEditar}" style="width: 5em"></th>
+                                    <th>Cidade</th>
+                                    <th style="width: 10em">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="c : *{cidadesSede}">
+                                    <td th:if="${podeEditar}" ><a title="Excluir" class="btn btn-light btn-sm" th:href="@{/admin/profissional/deletaCidadeSede/__*{id}__(cidadeSede=${c.id})}" onclick="return confirm('Confirma a exclusão?')"><i class="fas fa-trash"></i></a></td>
+                                    <td th:text="${c.nome}"></td>
+                                    <td th:text="${c.estado.sigla}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <span class="badge badge-secondary" th:if="*{#lists.isEmpty(cidadesSede)}">Nenhuma cidade sede definida</span>
+
+                    </div>
+                </div>
+                <div class="row mt-3" th:if="${profissional.preceptorResponsavel}">
+                    <div class="col">
+                        <h3 class="h4">Preceptoria</h3>
+                        <table class="table table-sm table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th th:if="${podeEditar}" style="width: 5em"></th>
+                                    <th style="width: 10em">Tipo profissional</th>
+                                    <th>Nome</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td th:if="${podeEditar}" >
+                                        <a title="Ver profissional" class="btn btn-light btn-sm" th:href="@{/admin/profissional/view/__${profissional.preceptorResponsavel.id}__}">
+                                            <i class="fas fa-folder-open"></i>
+                                        </a>
+                                    </td>
+                                    <td th:text="${profissional.preceptorResponsavel.tipoProfissional.descricao}"></td>
+                                    <td th:text="${profissional.preceptorResponsavel.nomeCompleto}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-3" th:if="${profissional.podeSerPreceptor}">
+                    <div class="col">
+                        <h3 class="h4">Preceptoria</h3>
+                        <table class="table table-sm table-striped table-hover" th:unless="*{#lists.isEmpty(alunos)}">
+                            <thead>
+                                <tr>
+                                    <th th:if="${podeEditar}" style="width: 5em"></th>
+                                    <th style="width: 10em">Tipo profissional</th>
+                                    <th>Nome</th>
+                                    <th style="width: 10em">Data de início</th>
+                                    <th style="width: 10em">Data de fim</th>
+                                    <th style="width: 5em">Ativo?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="a : *{alunos}">
+                                    <td th:if="${podeEditar}" >
+                                        <a title="Inativar" class="btn btn-light btn-sm" th:href="@{/admin/profissional/preceptor/inativa/__${a.id}__}" onclick="return confirm('Confirma a inativação?')"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                    <td th:text="${a.aluno.tipoProfissional.descricao}"></td>
+                                    <td th:text="${a.aluno.nomeCompleto}"></td>
+                                    <td th:text="${#calendars.format(a.inicio, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#calendars.format(a.validade, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${a.ativo? 'Sim' : 'Não'}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <span class="badge badge-secondary" th:if="*{#lists.isEmpty(alunos)}">Nenhum vínculo de preceptoria</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group text-right" th:if="${podeEditar}" >
+                <a  th:href="@{/admin/profissional/formCidadeSede/__${profissional.id}__}" class="btn btn-light"><i class="fas fa-city mr-2"></i> Cidades sede</a>
+                <a  th:href="@{/admin/profissional/formEspecialidade/__${profissional.id}__}" class="btn btn-light"><i class="fas fa-briefcase-medical mr-2"></i> Especialidades</a>
+                <a  th:href="@{/admin/profissional/preceptor/__${profissional.id}__}" class="btn btn-light" th:if="${profissional.podeSerPreceptor}"><i class="fas fa-chalkboard-teacher mr-2"></i> Preceptoria</a>
+                <a  th:href="@{/admin/profissional/emailCadastro/__${profissional.id}__}" class="btn btn-light" th:unless="${profissional.senhaAtiva}"><i class="fas fa-envelope"></i> Enviar email senha</a>
+            </div>
+        </main>
+        <script type="text/javascript">
+            (function ($) {
+                // ADICIONE JS CODE AQUI
+            })(jQuery);
+        </script>
+    </th:block>
+</html>

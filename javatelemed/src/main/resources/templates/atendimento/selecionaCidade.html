@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with="container='container-fluid', headerType='header_slim'">
+        <title>Selecionar cidade sede</title>
+        <main>
+            <div class="card  bg-light ">
+                <div class="card-body">
+                    Escolha a cidade sede para o seu atendimento
+                </div>
+            </div>
+            <form th:action="@{/atendimento/novo}" method="get">
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select name="estado" id="estado" required class="form-control">
+                                <option th:each="estado : ${estados}"
+                                        th:text="${estado.nome}"
+                                        th:value="${estado.id}" />
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="estado">Cidade sede do atendimento</label>
+                            <select name="sede" id="cidade" required class="form-control">
+                                <option value="@{null}">-- Selecione o estado -- </select>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group text-right mt-2">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle mr-2"></i>Selecionar cidade</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+        <script type="text/javascript">
+            $('document').ready(function () {
+                $('#estado').change(function () {
+                    var idEstado = $(this).val();
+                    $.getJSON("[[@{/atendimento/cidadesSede?idEstado=}]]" + idEstado, function (cidades) {
+                        $('#cidade').find('option').remove().end().append('<option value="">-- Selecione --</option>').val('');
+                        $.each(cidades, function (key, cidade) {
+                            $('#cidade').append($('<option>', {
+                                value: cidade.id,
+                                text: cidade.nome
+                            }));
+                        });
+                    });
+                });
+                $('#estado').change();
+            });
+
+        </script>
+    </th:block>
+</html>

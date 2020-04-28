@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <title>Cadastro de cidade</title>
+        <main>
+            <form action="#" th:action="@{/admin/localizacao/cidade/form/__${#objects.nullSafe(command.id, '')}__}" th:object="${command}" method="post">
+                <div class="row">
+                    <div class="col-md-2">
+                        <th:block th:insert="fragments/form.html :: text('Código', 'codigo')"/>
+                    </div>
+                    <div class="col-md">
+                        <th:block th:insert="fragments/form.html :: text('Nome', 'nome')"/>
+                    </div>
+                    <div class="col-md">
+                        <th:block th:insert="fragments/form.html :: selectEntity('Estado', 'estado', 'nome', ${estados})"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Atendimento?</label> <br />
+                            <input type="radio" th:field="*{atendimento}" th:value="${true}" />
+                            <label th:for="${#ids.prev('atendimento')}" th:text="Sim"></label>
+                            <input type="radio" th:field="*{atendimento}" th:value="${false}" />
+                            <label th:for="${#ids.prev('atendimento')}" th:text="Não"></label>
+                            <span th:if="${#fields.hasErrors('atendimento')}" th:errors="*{atendimento}" class='badge badge-danger'></span>
+                        </div>
+                    </div>
+                </div>
+                <th:block th:insert="fragments/form.html :: actions"></th:block>
+            </form>
+        </main>
+    </th:block>
+</html>

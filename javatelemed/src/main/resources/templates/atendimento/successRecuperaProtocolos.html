@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})"
+              th:with=" headerType='header_slim'">
+        <title>Recuperar protocolos e senhas</title>
+        <main>
+            <div class="card">
+                <div class="card-body bg-light">
+                    <h4 class="card-title">O processamento foi realizado com sucesso.</h4>
+                    Caso tenham sido encontrados atendimentos com o e-mail <span th:text="${email}" /> e com o CPF <span th:text="${cpf}" />, os dados de protocolo e senha serão enviados para o seu e-mail.
+                </div>
+            </div>
+            <div class="form-group mt-2 text-right">
+                <a class="btn btn-primary" th:href="@{/visualizar}">Visualizar atendimentos</a>
+            </div>
+        </main>
+    </th:block>
+</html>

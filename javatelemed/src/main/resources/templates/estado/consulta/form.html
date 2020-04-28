@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <th:block th:insert="fragments/layout.html :: layout(~{::title/text()}, ~{::link}, ~{::main}, ~{::script})">
+        <script src="https://cdn.tiny.cloud/1//tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+        <script>tinymce.init({
+                selector: 'textarea',
+                menubar: false,
+                toolbar: 'undo redo | ' +
+                        'bold italic | alignleft aligncenter alignjustify',
+            });</script>
+        <title>Cadastrar estado de uma consulta</title>
+        <main>
+            <form action="#" th:action="@{/admin/estado/consulta/form/__${#objects.nullSafe(command.id, '')}__}" th:object="${command}" method="post">
+                <div class="form-group">
+                    <label for="descricao">Descrição</label>
+                    <input type="text" class="form-control" th:field="*{descricao}"/>
+                    <span class="badge badge-danger" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}">erro de validação</span>
+                </div>
+                <div class="form-group">
+                    <label for="descricao">Termo de esclarecimento</label>
+                    <textarea class="form-control" th:field="*{termoEsclarecimento}"></textarea>
+                    <span class="badge badge-danger" th:if="${#fields.hasErrors('termoEsclarecimento')}" th:errors="*{termoEsclarecimento}">erro de validação</span>
+                </div>
+                <div class="form-group">
+                    <label for="indicadores">Indicadores</label>
+                    <ul>
+                        <li th:each="ind : ${indicadoresEstado}">
+                            <input type="checkbox" th:field="*{indicadores}" th:value="${ind}"/>
+                            <label th:for="${#ids.prev('indicadores')}" 
+                                   th:text="${ind.descricao}">Indicador</label>
+                        </li>
+                    </ul>
+                    <span class="badge badge-danger" th:if="${#fields.hasErrors('indicadores')}" th:errors="*{indicadores}">erro de validação</span>
+                </div>
+                <div class="form-group">
+                    <label for="proximoEstadoPaciente">Próximo estado quando o paciente envia uma nota</label>
+                    <select th:field="*{proximoEstadoPaciente}" class="form-control" id="proximoEstadoPaciente">
+                        <option th:value="0">-- Nenhum --</option>
+                        <option th:each="estado : ${proximosEstados}" 
+                                th:text="${estado.descricao}"
+                                th:value="${estado.id}"/>
+                    </select>
+                    <span class="badge badge-danger" th:if="${#fields.hasErrors('proximoEstadoPaciente')}" th:errors="*{proximoEstadoPaciente}">erro de validação</span>
+                </div>
+                <div class="form-group" id="proximosEstados">
+                    <label for="estados">Próximos estados (profissional)</label>
+                    <ul>
+                        <li th:each="estado : ${proximosEstados}">
+                            <input type="checkbox" th:field="*{proximosEstadosPossiveis}" th:value="${estado.id}"/>
+                            <label th:for="${#ids.prev('proximosEstadosPossiveis')}" 
+                                   th:text="${estado.descricao}">descrição estado</label>
+                        </li>
+                    </ul>
+                    <span class="badge badge-danger" th:if="${#fields.hasErrors('proximosEstadosPossiveis')}" th:errors="*{proximosEstadosPossiveis}">erro de validação</span>
+                </div>
+                <th:block th:insert="fragments/form.html :: actions"></th:block>
+            </form> 
+        </main>
+        <script>
+            $(document).ready(function () {
+                /*                $('#proximoEstadoAutomatico').change(function () {
+                 var value = $(this).val();
+                 if (value > 0) {
+                 $('#proximosEstados').find('input[type="checkbox"]').each(function () {
+                 $(this).prop('checked', false)
+                 });
+                 }
+                 });
+                 $('#proximosEstados').find('input[type="checkbox"]').each(function () {
+                 $(this).change(function () {
+                 if ($(this).is(':checked')) {
+                 $('#proximoEstadoAutomatico').find('option:selected').prop('selected', false);
+                 }
+                 });
+                 })*/
+            });
+        </script>
+    </th:block>
+</html>

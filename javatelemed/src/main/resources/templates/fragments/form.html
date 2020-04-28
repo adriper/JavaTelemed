@@ -1,0 +1,192 @@
+<!--
+  - Fragmentos de formulários com bind do SpringFramework.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+    <th:block th:fragment="text(label, path)">
+        <th:block th:insert="fragments/form.html :: field(${label}, ${path}, 'text')"/>
+    </th:block>
+
+    <th:block th:fragment="password(label, path)">
+        <th:block th:insert="fragments/form.html :: field(${label}, ${path}, 'password')"/>
+    </th:block>
+
+    <th:block th:fragment="selectEnum(label, path, desc, values)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <select th:field="*{__${path}__}" class="form-control" >
+                <option value="">---Selecione---</option>
+                <option th:each="val : ${values}" 
+                        th:value="${val}" 
+                        th:text="${val.__${desc}__}"></option>
+            </select>
+            <th:block th:insert="this :: fieldValidation(${path})"/>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="selectEntity(label, path, desc, values)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <select th:field="*{__${path}__}" class="form-control" >
+                <option value="">---Selecione---</option>
+                <option th:each="val : ${values}" 
+                        th:value="${val.id}" 
+                        th:text="${val.__${desc}__}"></option>
+            </select>
+            <th:block th:insert="this :: fieldValidation(${path})"/>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="radioEnum(label, path, desc, values)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <div>
+                <ul class="list-unstyled">
+                    <li class="form-check form-check-inline" th:each="val : ${values}">
+                        <label class="form-check-label" >
+                            <input class="form-check-input" type="radio" th:field="*{__${path}__}" th:value="${val}">
+                                <span th:text="${val.__${desc}__}"></span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <th:block th:insert="this :: fieldValidation(${path})"/>
+        </div>
+    </th:block>
+            
+    <th:block th:fragment="radioTrueFalse(label, path, trueLabel, falseLabel)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <div>
+                <ul class="list-unstyled">
+                    <li class="form-check form-check-inline">
+                        <label class="form-check-label" >
+                            <input class="form-check-input" type="radio" th:field="*{__${path}__}" th:value="${true}">
+                                <span th:text="${trueLabel}"></span>
+                        </label>
+                    </li>
+                    <li class="form-check form-check-inline">
+                        <label class="form-check-label" >
+                            <input class="form-check-input" type="radio" th:field="*{__${path}__}" th:value="${false}">
+                                <span th:text="${falseLabel}"></span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <th:block th:insert="this :: fieldValidation(${path})"/>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="radioEntity(label, path, desc, values)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <div>
+                <ul class="list-unstyled">
+                    <li class="form-check form-check-inline" th:each="val : ${values}">
+                        <label class="form-check-label" >
+                            <input class="form-check-input" type="radio" th:field="*{__${path}__}" th:value="${val.id}">
+                                <span th:text="${val.__${desc}__}"></span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <th:block th:insert="this :: fieldValidation(${path})"/>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="checkEnumList(label, path, desc, values)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <div>
+                <ul class="list-unstyled">
+                    <li class="form-check form-check-inline" th:each="val : ${values}">
+                        <label class="form-check-label" >
+                            <input class="form-check-input" type="check" th:field="*{__${path}__}" th:value="${val}">
+                                <span th:text="${val.__${desc}__}"></span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <th:block th:insert="this :: fieldValidation(${path})"/>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="checkEntityList(label, path, desc, values)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <div>
+                <ul class="list-unstyled">
+                    <li class="form-check form-check-inline" th:each="val : ${values}">
+                        <label class="form-check-label" >
+                            <input class="form-check-input" type="check" th:field="*{__${path}__}" th:value="${val.id}">
+                                <span th:text="${val.__${desc}__}"></span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <th:block th:insert="this :: fieldValidation(${path})"/>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="out(label, value)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <span class="d-inline-block form-control bg-light text-truncate" th:text="${#objects.nullSafe(value, '')}"/>
+        </div>
+    </th:block>
+    <th:block th:fragment="outUnescaped(label, value)">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <div class="border p-3 bg-light" th:utext="${#objects.nullSafe(value, '')}"/>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="actions"
+              th:with="submitIcon=${submitIcon} != null ? ${submitIcon} : 'fas fa-save',
+              submitLabel=${submitLabel} != null ? ${submitLabel} : 'Salvar',
+              submitClass=${submitClass} != null ? ${submitClass} : 'btn-primary',
+              left=${left} != null ? ${left} : ~{},
+              right=${right} != null ? ${right} : ~{}
+              ">
+        <div class="p-2 bg-light">
+            <div class="d-flex  justify-content-between">
+                <div class="btn-group">
+                    <th:block th:replace="${left} != null ? ${left} : ~{}"></th:block>
+                </div>
+                <div class="btn-group">
+                    <th:block th:replace="${right} != null ? ${right} : ~{}"></th:block>
+                    <button th:class="|btn ${submitClass}|" type="submit">
+                        <i th:class="|${submitIcon} mr-2|"></i> [[${submitLabel}]]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <!--
+      - Fragmentos de uso interno.
+    -->
+
+    <!-- centraliza a construção do label, assim mudando aqui, mudará os labels de todo tipo de campo -->
+    <th:block th:fragment="fieldLabel(label, path)" th:with="required=${required} == true">
+        <label class="font-weight-bold" th:for="${path}">
+            [[${label}]]<span th:if="${required} == true" class="text-danger">*</span>
+        </label>
+    </th:block>
+
+    <!-- centraliza a construção do erro de validação,
+         assim mudando aqui, mudará os erros de todo tipo de campo -->
+    <th:block th:fragment="fieldValidation(path)">
+        <span class="badge badge-danger" th:if="${#fields.hasErrors('__${path}__')}" th:errors="*{__${path}__}">erro de validação</span>
+    </th:block>
+
+    <!-- centraliza a construção do campos de texto similares, como:
+         text, number, password, email, etc-->
+    <th:block th:fragment="field(label, path, type)" th:with="required=${required} == true">
+        <div class="form-group">
+            <th:block th:insert="this :: fieldLabel(${label}, ${path})"/>
+            <input th:type="${type}" class="form-control" th:field="*{__${path}__}"/>
+            <th:block th:insert="this :: fieldValidation(${path})"/>
+        </div>
+    </th:block>
+</html>
