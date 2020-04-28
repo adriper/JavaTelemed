@@ -23,3 +23,13 @@ Execute os scripts que estão no diretório "scripts"
 
 ### CriptoConverter.java
 * Neste arquivo, indique os valores para a criptografia dos dados no banco de dados.
+
+## Compilação
+* Para compilação, utilize o Maven 3.2 ou superior.
+$ mvn clean install
+
+## Execuço
+* Para execução, é possível utilizar os comandos: 
+** ./mvnw spring-boot:run
+** java -jar target/javatelemed-1.0.jar
+
