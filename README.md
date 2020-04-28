@@ -21,5 +21,5 @@ Execute os scripts que estão no diretório "scripts"
 * Indique os dados do administrador do sistema - email, nome, sobrenome, cpf e senha. Esse arquivo pode ser apagado após a primeira execuço do sistema
 * Será criado um estado inicial para o atendimento.
 
-## CriptoConverter.java
+### CriptoConverter.java
 * Neste arquivo, indique os valores para a criptografia dos dados no banco de dados.
