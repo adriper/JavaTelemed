@@ -24,6 +24,12 @@ Execute os scripts que estão no diretório "scripts"
 ### CriptoConverter.java
 * Neste arquivo, indique os valores para a criptografia dos dados no banco de dados.
 
+### Recaptcha
+* O sistema está preparado para utilizar o recaptcha. Para tanto, insira os valores público e privado do recapatcha nos arquivos RecaptchaUtils.java (token privado), templates/atendimento/form.html, templates/atendimento/formProtocoloSenha.html, templates/atendimento/formRecuperaProtocolos.html, templates/atendimento/pacienteView.html, templates/senha/geraToken.html (token público)
+
+### TinyMCE
+* O sistema está preparado para uso do TinyMCE. Para tanto, insira o valor da chave nos arquivos templates/atendimento/profissional/realizaAtendimento.html e templates/estado/consulta/form.html
+
 ## Compilação
 Para compilação, utilize o Maven 3.2 ou superior.
 * $ mvn clean install
