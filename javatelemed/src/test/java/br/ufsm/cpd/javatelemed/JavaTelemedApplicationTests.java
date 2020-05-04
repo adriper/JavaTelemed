@@ -3,7 +3,7 @@ package br.ufsm.cpd.javatelemed;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LauduzApplicationTests {
+class JavaTelemedApplicationTests {
 
 //    @Test
 //    void contextLoads() {
@@ -12,7 +12,7 @@ class LauduzApplicationTests {
 //    @Test
 //    void password(@Autowired PasswordChecker passwordChecker) {
 ////        final Map<String, String> params = new HashMap<>();
-////        params.put("email", "admin@lauduz.com.br");
+////        params.put("email", "admin@javatelemed.minhaorganizacao.org");
 ////        passwordChecker.evaluate("teste001", params).forEach((key, value) -> {
 ////            if (value.isParcial() && value.isNotValid()) {
 ////                System.out.println(key + ": " + ((PasswordValidationRule) value.getRule()).getValidationError());
